@@ -2,8 +2,7 @@ package at.mankomania.server.service
 
 import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class HorseRaceServiceTest {
@@ -27,5 +26,11 @@ class HorseRaceServiceTest {
 
         assertEquals(200, result["p1"])
         assertEquals(0, result["p2"])
+    }
+
+    @Test
+    fun `test spinRoulette returns a non-null HorseColor`() {
+        val result = horseRaceService.spinRoulette()
+        assertNotNull(result)
     }
 }
