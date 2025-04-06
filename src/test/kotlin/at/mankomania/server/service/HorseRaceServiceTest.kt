@@ -46,22 +46,22 @@ class HorseRaceServiceTest {
     }
 
     @Test
-    fun `test placeBet fails if player does not exist`() {
-        val result = horseRaceService.placeBet("ghost-player", HorseColor.BLUE, 2025)
-        assertFalse(result)
+    fun `test place bet - player does not exist`() {
+        val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
+        assertEquals(false, result)
     }
 
     @Test
-    fun `test placeBet fails if balance is too low`() {
-        horseRaceService.registerPlayer(Player("poor-player", 0))
-        val result = horseRaceService.placeBet("poor-player", HorseColor.RED, 500)
-        assertFalse(result)
+    fun `test place bet - not enough balance`() {
+        horseRaceService.registerPlayer(player = Player("test-player", 0))
+        val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
+        assertEquals(false, result)
     }
 
     @Test
-    fun `test placeBet succeeds with valid balance`() {
-        horseRaceService.registerPlayer(Player("rich-player", 1000))
-        val result = horseRaceService.placeBet("rich-player", HorseColor.RED, 500)
-        assertTrue(result)
+    fun `test place bet`() {
+        horseRaceService.registerPlayer(player = Player("test-player", 2025))
+        val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
+        assertEquals(true, result)
     }
 }
