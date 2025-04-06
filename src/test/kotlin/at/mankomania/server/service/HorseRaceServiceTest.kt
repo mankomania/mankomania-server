@@ -4,6 +4,9 @@ import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
+
 
 class HorseRaceServiceTest {
 
@@ -55,4 +58,11 @@ fun `test placeBet fails if balance is too low`() {
     val result = HorseRaceService.placeBet("poor-player", HorseColor.RED, 500)
     assertFalse(result)
 }
+@Test
+fun `test placeBet succeeds with valid balance`() {
+    HorseRaceService.registerPlayer(Player("rich-player", 1000))
+    val result = HorseRaceService.placeBet("rich-player", HorseColor.RED, 500)
+    assertTrue(result)
+}
+
 
