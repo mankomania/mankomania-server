@@ -1,10 +1,10 @@
-package at.mankomania.server.controller
+package org.example.mankomaniaserverkotlin.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import at.mankomania.server.model.Bet
-import at.mankomania.server.model.HorseColor
-import at.mankomania.server.model.Player
-import at.mankomania.server.service.HorseRaceService
+import org.example.mankomaniaserverkotlin.model.Bet
+import org.example.mankomaniaserverkotlin.model.HorseColor
+import org.example.mankomaniaserverkotlin.model.Player
+import org.example.mankomaniaserverkotlin.service.HorseRaceService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,6 +37,7 @@ class HorseRaceControllerTest {
             .content(playerJson))
             .andExpect(status().isOk)
             .andExpect(content().string("Player registered successfully."))
+
     }
 
     @Test
