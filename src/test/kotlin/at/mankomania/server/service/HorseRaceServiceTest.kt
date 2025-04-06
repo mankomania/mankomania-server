@@ -34,3 +34,13 @@ class HorseRaceServiceTest {
         assertNotNull(result)
     }
 }
+@Test
+fun `test registerPlayer stores player correctly`() {
+    val balance = 2025
+    horseRaceService.registerPlayer(player = Player("test-player", balance))
+
+    val player = horseRaceService.getPlayer("test-player")
+
+    assertNotNull(player)
+    assertEquals(balance, player!!.balance)
+}
