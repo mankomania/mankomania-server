@@ -37,10 +37,15 @@ class HorseRaceServiceTest {
 @Test
 fun `test registerPlayer stores player correctly`() {
     val balance = 2025
-    horseRaceService.registerPlayer(player = Player("test-player", balance))
+    HorseRaceService.registerPlayer(player = Player("test-player", balance))
 
-    val player = horseRaceService.getPlayer("test-player")
+    val player = HorseRaceService.getPlayer("test-player")
 
     assertNotNull(player)
     assertEquals(balance, player!!.balance)
+}
+@Test
+fun `test placeBet fails if player does not exist`() {
+    val result = HorseRaceService.placeBet("ghost-player", HorseColor.BLUE, 2025)
+    assertFalse(result)
 }
