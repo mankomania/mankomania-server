@@ -49,3 +49,10 @@ fun `test placeBet fails if player does not exist`() {
     val result = HorseRaceService.placeBet("ghost-player", HorseColor.BLUE, 2025)
     assertFalse(result)
 }
+@Test
+fun `test placeBet fails if balance is too low`() {
+    HorseRaceService.registerPlayer(Player("poor-player", 0))
+    val result = HorseRaceService.placeBet("poor-player", HorseColor.RED, 500)
+    assertFalse(result)
+}
+
