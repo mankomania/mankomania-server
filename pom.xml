@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+		xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -21,6 +22,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<kotlin.version>1.9.25</kotlin.version>
+		<kotlinx.serialization.version>1.6.1</kotlinx.serialization.version>
 
 		<!-- SonarCloud Integration -->
 		<sonar.organization>mankomania-1</sonar.organization>
@@ -28,14 +30,25 @@
 	</properties>
 
 	<dependencies>
+		<!-- Spring Boot Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!-- Spring Boot WebSocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<!-- Jackson Kotlin support (if needed for Jackson-specific features) -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-kotlin</artifactId>
 		</dependency>
+
+		<!-- Kotlin -->
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-reflect</artifactId>
@@ -43,6 +56,13 @@
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib</artifactId>
+		</dependency>
+
+		<!-- Kotlinx Serialization (core library for @Serializable) -->
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-serialization-json</artifactId>
+			<version>${kotlinx.serialization.version}</version>
 		</dependency>
 
 		<!-- Test Dependencies -->
@@ -79,12 +99,21 @@
 					</args>
 					<compilerPlugins>
 						<plugin>spring</plugin>
+						<!-- Wichtig: serialization-Plugin hier deklarieren -->
+						<plugin>serialization</plugin>
 					</compilerPlugins>
 				</configuration>
 				<dependencies>
+					<!-- Für die All-Open Annotations (@SpringBootApplication etc.) -->
 					<dependency>
 						<groupId>org.jetbrains.kotlin</groupId>
 						<artifactId>kotlin-maven-allopen</artifactId>
+						<version>${kotlin.version}</version>
+					</dependency>
+					<!-- Für die @Serializable-Annotationen -->
+					<dependency>
+						<groupId>org.jetbrains.kotlin</groupId>
+						<artifactId>kotlin-maven-serialization</artifactId>
 						<version>${kotlin.version}</version>
 					</dependency>
 				</dependencies>
