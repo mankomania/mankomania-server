@@ -42,7 +42,7 @@ class LotteryService {
         }
     }
 
-    private fun processPayment(player: Player, amount: Int, reason: String): Boolean {
+    fun processPayment(player: Player, amount: Int, reason: String): Boolean {
         if (player.balance >= amount) {
             player.balance -= amount
             lotteryPool.addToPool(amount)
@@ -56,11 +56,11 @@ class LotteryService {
         return false
     }
 
-    private fun isWinner(player: Player): Boolean {
+    fun isWinner(player: Player): Boolean {
         return player.balance <= 0 || winners.contains(player.name)
     }
 
-    private fun declareWinner(player: Player) {
+    fun declareWinner(player: Player) {
         winners.add(player.name)
         player.balance = 0 // Ensure balance is zero
     }
