@@ -67,4 +67,12 @@ class LotteryServiceTest {
         assertEquals(50000, richPlayer.balance)
     }
 
+    @Test
+    fun playerBecomesWinnerWithNoMoney() {
+        val player = Player("almostBankrupt", 5000)
+        assertTrue(lotteryService.processGoToField(player))
+        assertEquals(0, player.balance)
+        assertFalse(lotteryService.processPassingLottery(player))
+    }
+
 }
