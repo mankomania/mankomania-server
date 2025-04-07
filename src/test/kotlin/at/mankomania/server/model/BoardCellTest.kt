@@ -6,14 +6,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import kotlin.test.assertEquals
 
-// Assumptions:
-// - CellState, CellAction, BoardCell, and Player are defined in your production code.
-//   For example:
-//   enum class CellState { FREE, OCCUPIED }
-//   interface CellAction { fun performAction(player: Player) }
-//   data class BoardCell(val id: Int, var state: CellState = CellState.FREE, var action: CellAction? = null)
-//   data class Player(val name: String)
-
 class BoardCellTest {
 
     private lateinit var cellActionMock: CellAction
@@ -35,6 +27,25 @@ class BoardCellTest {
 
         // Assert: The actual state should be FREE
         assertEquals(CellState.FREE, actualState, "The default state of a new board cell should be FREE.")
+    }
+
+    @Test
+    fun landOnShouldInvokeActionAndSetStateToOccupied() {
+        // Arrange: Create a BoardCell with a mock action
+        val boardCell = BoardCell(
+            index = 2,
+            hasBranch = false,
+            branchOptions = emptyList(),
+            action = cellActionMock
+        )
+        val testPlayer = Player("TestPlayer")
+
+        // Act: landOn is called
+        boardCell.landOn(testPlayer, gameControllerMock)
+
+        // Assert: Verify that execute(...) was called and the state is now OCCUPIED
+        Mockito.verify(cellActionMock, Mockito.times(1)).execute(testPlayer, gameControllerMock)
+        assertEquals(CellState.OCCUPIED, boardCell.state, "BoardCell should transition to OCCUPIED after landOn.")
     }
 
 

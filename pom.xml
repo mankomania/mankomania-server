@@ -56,6 +56,13 @@
 			<artifactId>kotlin-test-junit5</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Mockito Core Dependency -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.14.2</version> <!-- Die Version kannst du nach Bedarf anpassen -->
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
