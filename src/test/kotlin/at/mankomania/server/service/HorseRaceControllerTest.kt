@@ -1,59 +1,105 @@
 package org.example.mankomaniaserverkotlin.controller
 
+import at.mankomania.server.controller.HorseRaceController
 import at.mankomania.server.model.Bet
+import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.HorseRaceService
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.*
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
-@RestController
-@RequestMapping("/horse-race")
-class HorseRaceController(private val horseRaceService: HorseRaceService) {
+@WebMvcTest(HorseRaceController::class)
+class HorseRaceControllerTest {
 
-    // Register a player
-    @PostMapping("/register")
-    fun registerPlayer(@RequestBody player: Player): ResponseEntity<String> {
-        horseRaceService.registerPlayer(player)
-        return ResponseEntity.ok("Player registered successfully.")
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @MockitoBean
+    private lateinit var horseRaceService: HorseRaceService
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    @Test
+    fun `test register player`() {
+        val player = Player("player1", 100)
+        val playerJson = objectMapper.writeValueAsString(player)
+
+        mockMvc.perform(post("/horse-race/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(playerJson))
+            .andExpect(status().isOk)
+            .andExpect(content().string("Player registered successfully."))
+
     }
 
-    // Place a bet
-    @PostMapping("/place-bet")
-    fun placeBet(@RequestBody bet:Bet): ResponseEntity<String> {
-        val result = horseRaceService.placeBet(bet.playerId, bet.horseColor, bet.amount)
-        return if (result) {
-            ResponseEntity.ok("Bet placed successfully.")
-        } else {
-            ResponseEntity.badRequest().body("Error placing the bet.")
-        }
+    @Test
+    fun `test place bet successful`() {
+        val bet = Bet("player1", HorseColor.RED, 50)
+        val betJson = objectMapper.writeValueAsString(bet)
+
+        `when`(horseRaceService.placeBet("player1", HorseColor.RED, 50)).thenReturn(true)
+
+        mockMvc.perform(post("/horse-race/place-bet")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(betJson))
+            .andExpect(status().isOk)
+            .andExpect(content().string("Bet placed successfully."))
     }
 
-    // Wrapper class to hold both bets and players
-    data class RaceRequest(
-        val bets: List<Bet>,
-        val players: Map<String, Player>
-    )
+    @Test
+    fun `test place bet unsuccessful`() {
+        val bet = Bet("player1", HorseColor.RED, 5000) // Too high amount
+        val betJson = objectMapper.writeValueAsString(bet)
 
-    // Start the race and get the winner and payouts
-    @PostMapping("/start")
-    fun startRace(
-        @RequestBody request: RaceRequest
-    ): ResponseEntity<Map<String, Any>> {
-        val (winner, payouts) = horseRaceService.startRace(request.bets, request.players)
-        return ResponseEntity.ok(
-            mapOf(
-                "winner" to winner.name,
-                "payouts" to payouts
-            )
-        )
+        `when`(horseRaceService.placeBet("player1", HorseColor.RED, 5000)).thenReturn(false)
+
+        mockMvc.perform(post("/horse-race/place-bet")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(betJson))
+            .andExpect(status().isBadRequest)
+            .andExpect(content().string("Error placing the bet."))
     }
-    @GetMapping("/player/{id}")
-    fun getPlayer(@PathVariable id: String): ResponseEntity<Player?> {
-        val player = horseRaceService.getPlayer(id)
-        return if (player != null) {
-            ResponseEntity.ok(player)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+
+    @Test
+    fun `test start race`() {
+        val winner = HorseColor.RED
+        val payouts = mapOf("player1" to 200)
+
+        `when`(horseRaceService.startRace(anyList(), anyMap())).thenReturn(Pair(winner, payouts))
+
+        mockMvc.perform(post("/horse-race/start")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"bets": [], "players": {}}"""))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.winner").value(HorseColor.RED.name))
+            .andExpect(jsonPath("$.payouts.player1").value(200))
+    }
+
+    @Test
+    fun `test get player found`() {
+        val player = Player("player1", 150)
+        `when`(horseRaceService.getPlayer("player1")).thenReturn(player)
+
+        mockMvc.perform(get("/horse-race/player/player1"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value("player1"))
+            .andExpect(jsonPath("$.balance").value(150))
+    }
+
+    @Test
+    fun `test get player not found`() {
+        `when`(horseRaceService.getPlayer("nonexistent")).thenReturn(null)
+
+        mockMvc.perform(get("/horse-race/player/nonexistent"))
+            .andExpect(status().isNotFound)
     }
 }
