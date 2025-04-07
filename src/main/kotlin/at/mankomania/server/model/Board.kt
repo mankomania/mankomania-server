@@ -1,7 +1,7 @@
 package at.mankomania.server.model
 
 /**
- * @author eles17
+ * @author eles17, Angela Drucks
  * Represents the game board made up of multiple fields.
  *
  * There are two ways to create a board:
