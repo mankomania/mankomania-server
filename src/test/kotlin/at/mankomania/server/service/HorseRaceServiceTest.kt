@@ -40,20 +40,20 @@ class HorseRaceServiceTest {
     @Test
     fun `test place bet - player does not exist`() {
         val result = horseRaceService.placeBet("non-existent-player", HorseColor.BLUE, 2025)
-        Assertions.assertFalse(result)
+        assertFalse(result)
     }
 
     @Test
     fun `test place bet - not enough balance`() {
         horseRaceService.registerPlayer(Player("test-player", 0))
         val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
-        Assertions.assertFalse(result)
+        assertFalse(result)
     }
 
     @Test
     fun `test place bet`() {
         horseRaceService.registerPlayer(Player("test-player", 2025))
         val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
-        Assertions.assertTrue(result)
+        assertTrue(result)
     }
 }

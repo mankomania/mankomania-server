@@ -1,10 +1,9 @@
-package org.example.mankomaniaserverkotlin.controller
+package at.mankomania.server.service
 
 import at.mankomania.server.controller.HorseRaceController
 import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
-import at.mankomania.server.service.HorseRaceService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
@@ -13,7 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @WebMvcTest(HorseRaceController::class)
@@ -38,7 +38,6 @@ class HorseRaceControllerTest {
             .content(playerJson))
             .andExpect(status().isOk)
             .andExpect(content().string("Player registered successfully."))
-
     }
 
     @Test
@@ -57,7 +56,7 @@ class HorseRaceControllerTest {
 
     @Test
     fun `test place bet unsuccessful`() {
-        val bet = Bet("player1", HorseColor.RED, 5000) // Too high amount
+        val bet = Bet("player1", HorseColor.RED, 5000)
         val betJson = objectMapper.writeValueAsString(bet)
 
         `when`(horseRaceService.placeBet("player1", HorseColor.RED, 5000)).thenReturn(false)
