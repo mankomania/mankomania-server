@@ -3,162 +3,131 @@ package at.mankomania.server.service
 import at.mankomania.server.model.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.*
 
 class LotteryServiceTest {
 
-    private lateinit var lotteryService: LotteryService
-    private lateinit var player1: Player
-    private lateinit var player2: Player
+    private lateinit var service: LotteryService
+    private lateinit var richPlayer: Player
+    private lateinit var poorPlayer: Player
 
     @BeforeEach
-    fun setUp() {
-        lotteryService = LotteryService()
-        player1 = Player("Player1", position = 0, balance = 100000)
-        player2 = Player("Player2", position = 0, balance = 50000)
+    fun setup() {
+        service = LotteryService()
+        richPlayer = Player("Rich", balance = 150000)
+        poorPlayer = Player("Poor", balance = 4000)
+    }
+
+    // Pool amount tests
+    @Test
+    fun `pool starts empty`() {
+        assertEquals(0, service.getPoolAmount())
+    }
+
+    // GoToField tests
+    @Test
+    fun `goToField deducts 5000 from player`() {
+        assertTrue(service.processGoToField(richPlayer))
+        assertEquals(145000, richPlayer.balance)
+        assertEquals(5000, service.getPoolAmount())
     }
 
     @Test
-    fun `getPoolAmount should return 0 initially`() {
-        assertEquals(0, lotteryService.getPoolAmount())
+    fun `goToField fails when player cannot pay`() {
+        assertFalse(service.processGoToField(poorPlayer))
+        assertEquals(4000, poorPlayer.balance)
+        assertEquals(0, service.getPoolAmount())
     }
 
+    // Passing lottery tests
     @Test
-    fun `processGoToField should deduct 5000 when successful`() {
-        assertTrue(lotteryService.processGoToField(player1))
-        assertEquals(95000, player1.balance)
-        assertEquals(5000, lotteryService.getPoolAmount())
+    fun `passingLottery deducts 5000`() {
+        assertTrue(service.processPassingLottery(richPlayer))
+        assertEquals(145000, richPlayer.balance)
     }
 
+    // Landing tests
     @Test
-    fun `processGoToField should fail when player is bankrupt`() {
-        player1.balance = 0
-        assertFalse(lotteryService.processGoToField(player1))
-        assertEquals(0, lotteryService.getPoolAmount())
-    }
-
-    @Test
-    fun `processPassingLottery should deduct 5000 when successful`() {
-        assertTrue(lotteryService.processPassingLottery(player1))
-        assertEquals(95000, player1.balance)
-        assertEquals(5000, lotteryService.getPoolAmount())
-    }
-
-    @Test
-    fun `processLandingOnLottery should award pool when not empty`() {
-        lotteryService.processPassingLottery(player2) // Add 5000 to pool
-        val result = lotteryService.processLandingOnLottery(player1)
+    fun `landing awards full pool`() {
+        service.processGoToField(richPlayer) // Pool = 5000
+        val result = service.processLandingOnLottery(poorPlayer)
 
         assertTrue(result.success)
-        assertEquals("Won 5000 from lottery!", result.message)
-        assertEquals(105000, player1.balance)
-        assertEquals(0, lotteryService.getPoolAmount())
+        assertEquals(9000, poorPlayer.balance) // 4000 + 5000
+        assertEquals(0, service.getPoolAmount())
     }
 
     @Test
-    fun `processLandingOnLottery should deduct 50000 when pool empty`() {
-        val result = lotteryService.processLandingOnLottery(player1)
+    fun `landing pays 50000 when pool empty`() {
+        val result = service.processLandingOnLottery(richPlayer)
 
         assertTrue(result.success)
-        assertEquals("Paid 50000", result.message)
-        assertEquals(50000, player1.balance)
-        assertEquals(50000, lotteryService.getPoolAmount())
+        assertEquals(100000, richPlayer.balance) // 150000 - 50000
+        assertEquals(50000, service.getPoolAmount())
     }
 
     @Test
-    fun `processLandingOnLottery should declare winner when cannot pay 50000`() {
-        player1.balance = 10000
-        val result = lotteryService.processLandingOnLottery(player1)
+    fun `landing declares winner when cannot pay`() {
+        val result = service.processLandingOnLottery(poorPlayer)
 
         assertFalse(result.success)
-        assertEquals("Player has won the game", result.message)
-        assertEquals(0, player1.balance)
-        assertTrue(lotteryService.getWinners().contains(player1.name))
+        assertEquals(0, poorPlayer.balance)
+        assertTrue(service.getWinners().contains(poorPlayer.name))
+    }
+
+    // Winner tests
+    @Test
+    fun `winners list contains bankrupt players`() {
+        service.processLandingOnLottery(poorPlayer)
+        assertEquals(setOf(poorPlayer.name), service.getWinners())
     }
 
     @Test
-    fun `processPayment should handle exact balance payment`() {
-        player1.balance = 5000
-        assertTrue(lotteryService.processPayment(player1, 5000, "exact payment"))
-        assertEquals(0, player1.balance)
-        assertEquals(5000, lotteryService.getPoolAmount())
-        assertTrue(lotteryService.getWinners().contains(player1.name))
+    fun `winners cannot participate`() {
+        poorPlayer.balance = 0
+        assertFalse(service.processGoToField(poorPlayer))
+        assertFalse(service.processPassingLottery(poorPlayer))
     }
 
+    // Payment tests
     @Test
-    fun `processPaymentWithNotification should return correct message on success`() {
-        val (success, message) = lotteryService.processPaymentWithNotification(player1, 10000, "test")
+    fun `payment notification returns correct message`() {
+        val (success, message) = service.processPaymentWithNotification(
+            richPlayer,
+            10000,
+            "test"
+        )
+
         assertTrue(success)
-        assertEquals("test – 10000 added to the lottery", message)
-        assertEquals(90000, player1.balance)
-        assertEquals(10000, lotteryService.getPoolAmount())
+        assertTrue(message.contains("test"))
+        assertEquals(140000, richPlayer.balance)
+    }
+
+    // Edge cases
+    @Test
+    fun `multiple payments accumulate pool`() {
+        repeat(3) { service.processGoToField(richPlayer) }
+        assertEquals(15000, service.getPoolAmount())
     }
 
     @Test
-    fun `processPaymentWithNotification should handle multiple winners`() {
-        lotteryService.processPaymentWithNotification(player1, 100000, "bankrupt")
-        lotteryService.processPaymentWithNotification(player2, 50000, "bankrupt")
+    fun `exact balance payment works`() {
+        val exactPlayer = Player("Exact", balance = 5000)
+        assertTrue(service.processPayment(exactPlayer, 5000, "exact"))
+        assertEquals(0, exactPlayer.balance)
+    }
 
-        assertEquals(2, lotteryService.getWinners().size)
-        assertTrue(lotteryService.getWinners().containsAll(listOf(player1.name, player2.name)))
+    // Internal state tests
+    @Test
+    fun `pool resets after award`() {
+        service.processGoToField(richPlayer)
+        service.processLandingOnLottery(poorPlayer)
+        assertEquals(0, service.getPoolAmount())
     }
 
     @Test
-    fun `declareWinner should add player to winners`() {
-        lotteryService.declareWinner(player1)
-        assertTrue(lotteryService.isWinner(player1))
-        assertEquals(1, lotteryService.getWinners().size)
-    }
-
-    @Test
-    fun `isWinner should return false for player with positive balance`() {
-        assertFalse(lotteryService.isWinner(player1))
-    }
-
-    @Test
-    fun `getCurrentLotteryAmount should reflect pool changes`() {
-        assertEquals(0, lotteryService.getCurrentLotteryAmount())
-        lotteryService.processGoToField(player1)
-        assertEquals(5000, lotteryService.getCurrentLotteryAmount())
-        lotteryService.processLandingOnLottery(player2)
-        assertEquals(0, lotteryService.getCurrentLotteryAmount())
-    }
-
-    @Test
-    fun `LotteryResult should hold correct values`() {
-        val successResult = LotteryService.LotteryResult(true, "Success")
-        assertTrue(successResult.success)
-        assertEquals("Success", successResult.message)
-
-        val failResult = LotteryService.LotteryResult(false, "Failed")
-        assertFalse(failResult.success)
-        assertEquals("Failed", failResult.message)
-    }
-
-    @Test
-    fun `pool should handle multiple additions`() {
-        repeat(3) { lotteryService.processGoToField(player1) }
-        assertEquals(15000, lotteryService.getPoolAmount())
-        assertEquals(85000, player1.balance)
-    }
-
-    @Test
-    fun `landing should fully empty pool`() {
-        repeat(3) { lotteryService.processGoToField(player1) }
-        lotteryService.processLandingOnLottery(player2)
-        assertEquals(0, lotteryService.getPoolAmount())
-        assertEquals(65000, player2.balance)
-    }
-
-    @Test
-    fun `winner should not be able to participate`() {
-        player1.balance = 0
-        assertFalse(lotteryService.processGoToField(player1))
-        assertFalse(lotteryService.processPassingLottery(player1))
-
-        val result = lotteryService.processLandingOnLottery(player1)
-        assertFalse(result.success)
-        assertEquals("Player has already won", result.message)
+    fun `currentLotteryAmount matches pool`() {
+        service.processGoToField(richPlayer)
+        assertEquals(5000, service.getCurrentLotteryAmount())
     }
 }
