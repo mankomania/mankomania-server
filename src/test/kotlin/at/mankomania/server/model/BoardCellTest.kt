@@ -74,4 +74,5 @@ class BoardCellTest {
         assertEquals(CellState.OCCUPIED, branchCell.state)
     }
 
+
 }

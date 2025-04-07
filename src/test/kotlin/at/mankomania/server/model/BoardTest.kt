@@ -33,4 +33,10 @@ class BoardTest {
         }
         customBoard = Board(cells)
     }
+
+    @Test
+    fun constructorWithSizeShouldCreateCorrectNumberOfCells() {
+        // Assert
+        assertEquals(10, defaultBoard.size, "Board constructed with size 10 should have 10 cells.")
+    }
 }
