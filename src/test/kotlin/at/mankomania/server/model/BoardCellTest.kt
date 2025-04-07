@@ -28,7 +28,7 @@ class BoardCellTest {
     @Test
     fun newBoardCellShouldHaveDefaultStateFree() {
         // Arrange: Create a new BoardCell; by default, a new cell should have state FREE
-        val boardCell = BoardCell(id = 1)
+        val boardCell = BoardCell(index = 1, hasBranch = false, branchOptions = emptyList())
 
         // Act: Get the state of the cell.
         val actualState = boardCell.state
