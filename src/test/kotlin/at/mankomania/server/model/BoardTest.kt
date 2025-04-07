@@ -59,6 +59,22 @@ class BoardTest {
         assertEquals(5, customBoard.size, "Custom board should have exactly 5 cells.")
     }
 
+    @Test
+    fun customBoardShouldAssignBranchOptionsCorrectly() {
+        // Indices 0, 2, 4 (even) are marked as hasBranch = true
+        // and have branchOptions = [index + 5]
+        val branchCells = customBoard.cells.filter { it.hasBranch }
+        assertEquals(3, branchCells.size, "Three cells should be marked with hasBranch = true (indices 0, 2, 4).")
+
+        branchCells.forEach { cell ->
+            val expectedOptions = listOf(cell.index + 5)
+            assertEquals(expectedOptions, cell.branchOptions,
+                "Branch options should be [index + 5] for cells with hasBranch = true.")
+        }
+    }
+
+
+
 
 
 
