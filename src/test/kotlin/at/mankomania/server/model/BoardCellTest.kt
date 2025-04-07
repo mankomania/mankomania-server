@@ -130,4 +130,21 @@ class BoardCellTest {
     }
 
 
+    @Test
+    fun getActionShouldReturnCurrentAction() {
+        // Arrange: Create a BoardCell with a mock action in the constructor
+        val boardCell = BoardCell(
+            index = 12,
+            hasBranch = false,
+            action = cellActionMock
+        )
+
+        // Act: Retrieve the current action
+        val currentAction = boardCell.action
+
+        // Assert: Confirm it matches the mock
+        assertEquals(cellActionMock, currentAction, "Getter should return the currently assigned action.")
+    }
+
+
 }
