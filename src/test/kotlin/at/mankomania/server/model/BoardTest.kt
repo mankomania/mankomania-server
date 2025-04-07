@@ -74,7 +74,16 @@ class BoardTest {
     }
 
 
+    @Test
+    fun getCellShouldReturnCorrectCell() {
+        // For defaultBoard, test a straightforward index
+        val cellAtIndex3 = defaultBoard.getCell(3)
+        assertEquals(3, cellAtIndex3.index, "defaultBoard.getCell(3) should return the cell with index 3.")
 
+        // For customBoard, test an in-range index
+        val cellAtIndex2 = customBoard.getCell(2)
+        assertEquals(2, cellAtIndex2.index, "customBoard.getCell(2) should return the cell with index 2.")
+    }
 
 
 
