@@ -9,6 +9,7 @@
 package at.mankomania.server.model
 
 import at.mankomania.server.controller.GameController
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -89,6 +90,26 @@ class BoardCellTest {
         // Assert: The state should be updated
         assertEquals(CellState.OCCUPIED, boardCell.state,
             "Setting the state to OCCUPIED should update the BoardCell's state correctly.")
+    }
+
+    @Test
+    fun setActionShouldChangeCellAction() {
+        val boardCell = BoardCell(
+            index = 5,
+            hasBranch = false,
+            branchOptions = emptyList(),
+            action = null
+        )
+
+        // Initially, action is null
+        assertNull(boardCell.action, "By default, the action should be null if not provided in the constructor.")
+
+        // Act: Assign a mock action
+        boardCell.action = cellActionMock
+
+        // Assert: The action should be updated
+        assertEquals(cellActionMock, boardCell.action,
+            "Setting the action should update the BoardCell's action.")
     }
 
 
