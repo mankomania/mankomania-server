@@ -13,13 +13,15 @@ import at.mankomania.server.controller.GameController
  * @property state The current state of the cell (FREE, OCCUPIED, etc.).
  * @property hasBranch Indicates whether the field allows the player to choose a different path (branch).
  * @property branchOptions Possible branch destination indices.
+ * @property action The action to be executed when the player lands on the cell.
  */
 
 data class BoardCell(
     val index:Int,
     var state: CellState = CellState.FREE,
     val hasBranch: Boolean,
-    val branchOptions: List<Int> = emptyList()
+    val branchOptions: List<Int> = emptyList(),
+    var action: CellAction? = null
 ) {
     /**
      * Handles a player landing on the cell.
@@ -29,4 +31,6 @@ data class BoardCell(
         action?.execute(player, gameController)
         state = CellState.OCCUPIED
     }
+
+
 }
