@@ -1,5 +1,9 @@
 package org.example.mankomaniaserverkotlin.controller
 
+import at.mankomania.server.controller.HorseRaceController
+import at.mankomania.server.model.Bet
+import at.mankomania.server.model.HorseColor
+import at.mankomania.server.service.HorseRaceService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.example.mankomaniaserverkotlin.model.Bet
 import org.example.mankomaniaserverkotlin.model.HorseColor
