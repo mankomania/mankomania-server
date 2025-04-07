@@ -74,5 +74,22 @@ class BoardCellTest {
         assertEquals(CellState.OCCUPIED, branchCell.state)
     }
 
+    @Test
+    fun setStateShouldChangeCellState() {
+        val boardCell = BoardCell(
+            index = 4,
+            hasBranch = false,
+            branchOptions = emptyList(),
+            action = null
+        )
+
+        // Act: Change the state
+        boardCell.state = CellState.OCCUPIED
+
+        // Assert: The state should be updated
+        assertEquals(CellState.OCCUPIED, boardCell.state,
+            "Setting the state to OCCUPIED should update the BoardCell's state correctly.")
+    }
+
 
 }
