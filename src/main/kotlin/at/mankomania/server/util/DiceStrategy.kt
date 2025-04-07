@@ -15,5 +15,5 @@ fun interface DiceStrategy {
      * Rolls the dice and returns the result.
      * @return The result of the dice roll.
      */
-    fun roll(): Int
+    fun roll(): DiceResult
 }
