@@ -1,11 +1,8 @@
-package org.example.mankomaniaserverkotlin.service
+package at.mankomania.server.service
 
-import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
+import at.mankomania.server.model.Bet
 import at.mankomania.server.model.Player
-import org.example.mankomaniaserverkotlin.model.Bet
-import org.example.mankomaniaserverkotlin.model.HorseColor
-import org.example.mankomaniaserverkotlin.model.Player
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,24 +10,40 @@ class HorseRaceService {
 
     private val players = mutableMapOf<String, Player>()
 
-    // This will be used to calculate the winner
+    // Function that simulates the race and returns a random HorseColor
+    fun runRace(): HorseColor {
+        return HorseColor.values().random()  // Returns a random color from the HorseColor enum
+    }
+
+    // Other functions (spinRoulette, calculateWinnings, etc.)
     fun spinRoulette(): HorseColor {
-        val weightedList = HorseColor.entries.flatMap { color -> List(color.weight) { color } }
-        return weightedList.random()  // Return a random HorseColor from the weighted list
+        return HorseColor.values().random()  // Returns a random color from the HorseColor enum
+    }
+
+    // Calculate the winnings based on the bets and the winning color
+    fun calculateWinnings(bets: List<Bet>, winningColor: HorseColor): Map<String, Int> {
+        val results = mutableMapOf<String, Int>()
+        for (bet in bets) {
+            if (bet.horseColor == winningColor) {  // Compare bet's horse color with the winning color
+                results[bet.playerId] = bet.amount * 2  // If the bet wins, double the bet amount
+            } else {
+                results[bet.playerId] = 0  // If the bet loses, payout is 0
+            }
+        }
+        return results
     }
 
     // Start the race and calculate payouts
     fun startRace(bets: List<Bet>, players: Map<String, Player>): Pair<HorseColor, Map<String, Int>> {
-        val winner = spinRoulette()  // Get the winning horse
+        val winner = runRace()  // Get the winning horse
         val payouts = mutableMapOf<String, Int>()
 
         bets.forEach { bet ->
-            if (bet.horse == winner) {  // Compare bet's horse with the winner
-                // Handle payouts (e.g., double the bet amount for the win)
-                payouts[bet.playerId] = bet.amount * 2
+            if (bet.horseColor == winner) {  // Compare bet's horse color with the winner
+                payouts[bet.playerId] = bet.amount * 2  // Double the bet amount for winners
             }
         }
-        return winner to payouts  // Return the winner and payouts map
+        return winner to payouts  // Return the winner and the payouts map
     }
 
     // Register a player
@@ -38,19 +51,18 @@ class HorseRaceService {
         players[player.id] = player
     }
 
-    // Place a bet
-    fun placeBet(playerId: String, horse: HorseColor, amount: Int): Boolean {
-        val player = players[playerId] ?: return false
-        // Logic to place a bet (check balance, etc.)
-        if (player.balance >= amount) {
-            player.balance -= amount  // Deduct the bet amount from the player's balance
-            return true  // Bet is placed successfully
-        }
-        return false  // Not enough balance for the bet
+    // Get player details
+    fun getPlayer(playerId: String): Player? {
+        return players[playerId]
     }
 
-    // Get player details
-    fun getPlayer(id: String): Player? {
-        return players[id]
+    // Place a bet
+    fun placeBet(playerId: String, horseColor: HorseColor, amount: Int): Boolean {
+        val player = players[playerId] ?: return false  // If the player doesn't exist, return false
+        if (player.balance >= amount) {
+            player.balance -= amount  // Deduct the bet amount from the player's balance
+            return true  // Bet placed successfully
+        }
+        return false  // Not enough balance for the bet
     }
 }

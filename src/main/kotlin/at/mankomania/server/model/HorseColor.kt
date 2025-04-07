@@ -1,7 +1,8 @@
 package at.mankomania.server.model
 
-/**
- * Represents the possible horse colors in the horse race minigame.*/
-enum class HorseColor {
-    RED, BLUE, GREEN, YELLOW
+enum class HorseColor(val weight: Int) {
+    RED(3),
+    BLUE(2),
+    GREEN(1),
+    YELLOW(1)
 }
