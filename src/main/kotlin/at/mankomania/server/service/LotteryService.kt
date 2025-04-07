@@ -57,11 +57,11 @@ class LotteryService {
     }
 
     private fun isWinner(player: Player): Boolean {
-        return player.balance <= 0 || winners.contains(player.id)
+        return player.balance <= 0 || winners.contains(player.name)
     }
 
     private fun declareWinner(player: Player) {
-        winners.add(player.id)
+        winners.add(player.name)
         player.balance = 0 // Ensure balance is zero
     }
 
