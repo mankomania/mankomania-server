@@ -19,4 +19,13 @@ class LotteryServiceTest {
         poorPlayer = Player("poor", 4000)
         bankruptPlayer = Player("bankrupt", 0)
     }
+
+    @Test
+    fun processGoToField() {
+        val initialPool = lotteryService.getPoolAmount()
+        assertTrue(lotteryService.processGoToField(richPlayer))
+        assertEquals(95000, richPlayer.balance)
+        assertEquals(initialPool + 5000, lotteryService.getPoolAmount())
+    }
+
 }
