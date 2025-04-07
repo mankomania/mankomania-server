@@ -25,5 +25,17 @@ class BoardCellTest {
         gameControllerMock = Mockito.mock(GameController::class.java)
     }
 
+    @Test
+    fun newBoardCellShouldHaveDefaultStateFree() {
+        // Arrange: Create a new BoardCell; by default, a new cell should have state FREE
+        val boardCell = BoardCell(id = 1)
+
+        // Act: Get the state of the cell.
+        val actualState = boardCell.state
+
+        // Assert: The actual state should be FREE
+        assertEquals(CellState.FREE, actualState, "The default state of a new board cell should be FREE.")
+    }
+
 
 }
