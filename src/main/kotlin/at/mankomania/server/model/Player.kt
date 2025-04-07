@@ -21,17 +21,18 @@ data class Player(
      * @param board The game board used for size and field information.
      * @return True if the player landed on a branching field; false otherwise.
      */
-    fun move(steps:Int, board: Board): Boolean{
-        require(steps >= 0) {"Steps must be non-negative."}
+    fun move(steps: Int, board: Board): Boolean {
+        require(steps >= 0) { "Steps must be non-negative." }
 
         position = (position + steps) % board.size //if on 40 --> wrap around back to field 1
 
         //retrieve the field once and check for branch
-        val currentField = board.getField(position) //Board.getField(position) must return a Field with populated branchOptions if hasBranch == true
-        return if(currentField.hasBranch) {
+        val currentField =
+            board.getField(position) //Board.getField(position) must return a Field with populated branchOptions if hasBranch == true
+        return if (currentField.hasBranch) {
             chooseBranch(currentField.branchOptions)
             true
-        }else{
+        } else {
             false
         }
 
@@ -43,7 +44,7 @@ data class Player(
      * @param board The game board used to access field information.
      * @return True if the current field has a branch; false otherwise.
      */
-    fun hasBranch(board: Board): Boolean{
+    fun hasBranch(board: Board): Boolean {
         return board.getField(position).hasBranch
     }
 
@@ -52,13 +53,13 @@ data class Player(
      *
      * @param branchOptions A list of possible next field indices to choose from
      */
-    fun chooseBranch(branchOptions: List<Int>){
+    fun chooseBranch(branchOptions: List<Int>) {
         //simulate a basic decision: choose the first option
         val chosen = branchOptions.firstOrNull()
-        if(chosen != null) {
+        if (chosen != null) {
             println("Branching: Player '$name' chooses to go to field $chosen.")
             position = chosen
-        }else{
+        } else {
             println("Branching: No branch options available for Player '$name'.")
         }
     }
@@ -71,3 +72,4 @@ data class Player(
     fun getCurrentPosition(): Int {
         return position
     }
+}

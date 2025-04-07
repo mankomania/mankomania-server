@@ -1,10 +1,10 @@
 package at.mankomania.server
 
 
-import org.example.mankomaniaserverkotlin.model.Board
-import org.example.mankomaniaserverkotlin.model.Player
+import at.mankomania.server.model.Board
+import at.mankomania.server.model.Player
 import org.junit.jupiter.api.BeforeEach
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.assertFalse

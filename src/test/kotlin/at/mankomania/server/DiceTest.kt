@@ -1,9 +1,10 @@
 package at.mankomania.server
 
-import org.example.mankomaniaserverkotlin.util.DefaultDiceStrategy
-import org.example.mankomaniaserverkotlin.util.Dice
+import at.mankomania.server.util.Dice
+import at.mankomania.server.util.DefaultDiceStrategy
 import org.springframework.test.util.AssertionErrors.assertTrue
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
+
 
 
 /**
@@ -13,7 +14,7 @@ import kotlin.test.Test
 class DiceTest {
 
     /**
-     * Validates that the vlaid value for dice Roll is returned
+     * Validates that the valid value for Dice roll is returned
      */
     @Test
     fun testRollDiceReturnsValidValue(){
