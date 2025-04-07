@@ -58,4 +58,13 @@ class LotteryServiceTest {
         assertEquals(50000, lotteryService.getPoolAmount())
     }
 
+    @Test
+    fun playerCantReceiveMoneyTwice() {
+        lotteryService.processGoToField(richPlayer)
+        lotteryService.processLandingOnLottery(richPlayer)
+        val result = lotteryService.processLandingOnLottery(richPlayer)
+        assertTrue(result.success)
+        assertEquals(50000, richPlayer.balance)
+    }
+
 }
