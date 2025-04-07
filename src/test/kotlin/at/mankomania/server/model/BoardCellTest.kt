@@ -1,3 +1,11 @@
+/**
+ * @file BoardCellTest.kt
+ * @author Angela Drucks
+ * @since 2025-04-07
+ * @description Unit-Testklasse zur Überprüfung der Spielfeldlogik in [BoardCell], inklusive Konstruktor-Tests,
+ *              Branch-Logik und Modulo-basiertem Feldzugriff.
+ */
+
 package at.mankomania.server.model
 
 import at.mankomania.server.controller.GameController

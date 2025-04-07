@@ -30,5 +30,5 @@ class Board (val cells: List<BoardCell>) {
      * @param index The index of the field to retrieve.
      * @return The field at the given index, wrapped around if necessary.
      */
-    fun getField(index:Int): BoardCell = cells [index % cells.size]
+    fun getCell(index:Int): BoardCell = cells [index % cells.size]
 }

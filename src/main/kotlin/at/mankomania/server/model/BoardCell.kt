@@ -2,7 +2,7 @@
  * @file BoardCell.kt
  * @author eles17, Angela Drucks,
  * @since 2025-04-02
- * @description Repräsentiert ein einzelnes Spielfeld (Zelle) inkl. Position und zugewiesener Action.
+ * @description Repräsentiert ein einzelnes Spielfeld (Cell) inkl. Position und zugewiesener Action.
  */
 package at.mankomania.server.model
 
