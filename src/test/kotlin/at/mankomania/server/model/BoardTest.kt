@@ -39,4 +39,17 @@ class BoardTest {
         // Assert
         assertEquals(10, defaultBoard.size, "Board constructed with size 10 should have 10 cells.")
     }
+
+    @Test
+    fun constructorWithSizeShouldMarkBranchCells() {
+        // Cells 3 and 7 should be marked as branch cells
+        val branchCells = defaultBoard.cells.filter { it.hasBranch }
+        assertEquals(2, branchCells.size, "Exactly two cells should be marked as branch cells (indices 3 and 7).")
+
+        val branchIndices = branchCells.map { it.index }
+        assertTrue(
+            branchIndices.contains(3) && branchIndices.contains(7),
+            "Branch cells should be at indices 3 and 7."
+        )
+    }
 }
