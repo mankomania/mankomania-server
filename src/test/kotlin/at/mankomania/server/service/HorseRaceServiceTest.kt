@@ -1,3 +1,4 @@
+
 import at.mankomania.server.MankomaniaServerApplication
 import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
@@ -22,9 +23,10 @@ class HorseRaceServiceTest {
 
     @Test
     fun `test start race`() {
-        val result = horseRaceService.startRace(listOf(), mapOf())
+        val result = horseRaceService.startRace(listOf())
         assertNotNull(result)
     }
+
 
     @Test
     fun `test register player`() {
@@ -56,3 +58,4 @@ class HorseRaceServiceTest {
         assertTrue(result)
     }
 }
+
