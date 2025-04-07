@@ -93,6 +93,23 @@ class BoardCellTest {
     }
 
     @Test
+    fun setStateShouldUpdateCellState() {
+        val boardCell = BoardCell(
+            index = 10,
+            hasBranch = false
+        )
+
+        // Initially FREE
+        assertEquals(CellState.FREE, boardCell.state, "Initial cell state should be FREE.")
+
+        // Act: Set the state to OCCUPIED
+        boardCell.state = CellState.OCCUPIED
+
+        // Assert: The cell state should now be OCCUPIED
+        assertEquals(CellState.OCCUPIED, boardCell.state, "Cell state should be updated to OCCUPIED.")
+    }
+
+    @Test
     fun setActionShouldChangeCellAction() {
         val boardCell = BoardCell(
             index = 5,
