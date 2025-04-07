@@ -85,6 +85,17 @@ class BoardTest {
         assertEquals(2, cellAtIndex2.index, "customBoard.getCell(2) should return the cell with index 2.")
     }
 
+    @Test
+    fun getCellShouldWrapIndexUsingModulo() {
+        // defaultBoard has size 10, so index 12 wraps to 2
+        val wrappedCell = defaultBoard.getCell(12)
+        assertEquals(2, wrappedCell.index, "Index 12 should wrap around to cell index 2 for a board of size 10.")
+
+        // customBoard has size 5, so index 7 wraps to 2
+        val wrappedCellCustom = customBoard.getCell(7)
+        assertEquals(2, wrappedCellCustom.index, "Index 7 should wrap around to cell index 2 for a board of size 5.")
+    }
+
 
 
 }
