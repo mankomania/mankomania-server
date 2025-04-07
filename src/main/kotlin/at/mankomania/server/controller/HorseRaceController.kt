@@ -10,6 +10,22 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/horse-race")
 class HorseRaceController(private val horseRaceService: HorseRaceService) {
+    // Register a player
+    @PostMapping("/register")
+    fun registerPlayer(@RequestBody player: Player): ResponseEntity<String> {
+        horseRaceService.registerPlayer(player)
+        return ResponseEntity.ok("Player registered successfully.")
+    }
+    // Place a bet
+    @PostMapping("/place-bet")
+    fun placeBet(@RequestBody bet: Bet): ResponseEntity<String> {
+        val result = horseRaceService.placeBet(bet.playerId, bet.horseColor, bet.amount)
+        return if (result) {
+            ResponseEntity.ok("Bet placed successfully.")
+        } else {
+            ResponseEntity.badRequest().body("Error placing the bet.")
+        }
+    }
 
     // Start the race and get the winner and payouts
     @PostMapping("/start")
@@ -32,7 +48,7 @@ class HorseRaceController(private val horseRaceService: HorseRaceService) {
             ResponseEntity.notFound().build()
         }
     }
-
+    // Wrapper class to hold both bets and players
     data class RaceRequest(
         val bets: List<Bet>,
         val players: Map<String, Player>
