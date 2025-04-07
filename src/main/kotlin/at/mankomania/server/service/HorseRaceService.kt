@@ -1,7 +1,7 @@
 package at.mankomania.server.service
 
-import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Bet
+import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
 import org.springframework.stereotype.Service
 
@@ -34,7 +34,7 @@ class HorseRaceService {
     }
 
     // Start the race and calculate payouts
-    fun startRace(bets: List<Bet>, players: Map<String, Player>): Pair<HorseColor, Map<String, Int>> {
+    fun startRace(bets: List<Bet>): Pair<HorseColor, Map<String, Int>> {
         val winner = runRace()  // Get the winning horse
         val payouts = mutableMapOf<String, Int>()
 

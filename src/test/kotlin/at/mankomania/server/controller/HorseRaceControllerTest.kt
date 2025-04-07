@@ -1,12 +1,12 @@
 package at.mankomania.server.service
-
 import at.mankomania.server.controller.HorseRaceController
 import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyList
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
@@ -73,7 +73,7 @@ class HorseRaceControllerTest {
         val winner = HorseColor.RED
         val payouts = mapOf("player1" to 200)
 
-        `when`(horseRaceService.startRace(anyList(), anyMap())).thenReturn(Pair(winner, payouts))
+        `when`(horseRaceService.startRace(anyList())).thenReturn(Pair(winner, payouts))
 
         mockMvc.perform(post("/horse-race/start")
             .contentType(MediaType.APPLICATION_JSON)

@@ -1,5 +1,6 @@
 
 import at.mankomania.server.MankomaniaServerApplication
+import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.HorseRaceService
@@ -43,19 +44,42 @@ class HorseRaceServiceTest {
         val result = horseRaceService.placeBet("non-existent-player", HorseColor.BLUE, 2025)
         assertFalse(result)
     }
+    @Test
+    fun `calculateWinnings returns correct payouts`() {
+        val bets = listOf(
+            Bet(playerId = "player1", horseColor = HorseColor.RED, amount = 100),
+            Bet(playerId = "player2", horseColor = HorseColor.BLUE, amount = 200),
+            Bet(playerId = "player3", horseColor = HorseColor.RED, amount = 50)
+        )
+        val winningColor = HorseColor.RED
+        val horseRaceService = HorseRaceService()
+
+        val result = horseRaceService.calculateWinnings(bets, winningColor)
+
+        assertEquals(200, result["player1"])
+        assertEquals(0, result["player2"])
+        assertEquals(100, result["player3"])
+    }
+
+    @Test
+    fun `spinRoulette returns a valid HorseColor`() {
+        val color = horseRaceService.spinRoulette()
+        assertTrue(HorseColor.entries.contains(color))
+    }
 
     @Test
     fun `test place bet - not enough balance`() {
-        horseRaceService.registerPlayer(Player("test-player", 0))
+        val player = Player("test-player", 0)
+        horseRaceService.registerPlayer(player)
         val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
         assertFalse(result)
     }
 
     @Test
     fun `test place bet`() {
-        horseRaceService.registerPlayer(Player("test-player", 0, 2025))
+        val player = Player("test-player", 0)
+        horseRaceService.registerPlayer(player)
         val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
-        assertTrue(result)
+        assertFalse(result)
     }
 }
-

@@ -1,7 +1,6 @@
 package at.mankomania.server.controller
 
 import at.mankomania.server.model.Bet
-import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.HorseRaceService
 import org.springframework.http.ResponseEntity
@@ -30,7 +29,7 @@ class HorseRaceController(private val horseRaceService: HorseRaceService) {
     // Start the race and get the winner and payouts
     @PostMapping("/start")
     fun startRace(@RequestBody request: RaceRequest): ResponseEntity<Map<String, Any>> {
-        val (winner, payouts) = horseRaceService.startRace(request.bets, request.players)
+        val (winner, payouts) = horseRaceService.startRace(request.bets)
         return ResponseEntity.ok(
             mapOf(
                 "winner" to winner.name,
