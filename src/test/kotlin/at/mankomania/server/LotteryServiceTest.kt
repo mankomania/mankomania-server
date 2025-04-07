@@ -20,6 +20,7 @@ class LotteryServiceTest {
         bankruptPlayer = Player("bankrupt", 0)
     }
 
+    // Payment when using “go to” fields
     @Test
     fun processGoToField() {
         val initialPool = lotteryService.getPoolAmount()
@@ -28,6 +29,7 @@ class LotteryServiceTest {
         assertEquals(initialPool + 5000, lotteryService.getPoolAmount())
     }
 
+    // Payment when crossing the lottery field
     @Test
     fun processPassingLottery() {
         val initialPool = lotteryService.getPoolAmount()
@@ -36,6 +38,7 @@ class LotteryServiceTest {
         assertEquals(initialPool + 5000, lotteryService.getPoolAmount())
     }
 
+    // Correct payout when landing directly on the field
     @Test
     fun landingOnLotteryWithMoney() {
         val initialPool = lotteryService.getPoolAmount()
@@ -49,6 +52,7 @@ class LotteryServiceTest {
         assertEquals(0, lotteryService.getPoolAmount())
     }
 
+    // Pool update logic and edge cases (e.g. empty pool)
     @Test
     fun landingOnEmptyPool() {
         assertEquals(0, lotteryService.getPoolAmount())
@@ -58,6 +62,7 @@ class LotteryServiceTest {
         assertEquals(50000, lotteryService.getPoolAmount())
     }
 
+    // Tests verify that the player never receives money more than once per landing event
     @Test
     fun playerCantReceiveMoneyTwice() {
         lotteryService.processGoToField(richPlayer)
@@ -67,6 +72,7 @@ class LotteryServiceTest {
         assertEquals(50000, richPlayer.balance)
     }
 
+    // Test if the winner is chosen correctly
     @Test
     fun playerBecomesWinnerWithNoMoney() {
         val player = Player("almostBankrupt", 5000)
