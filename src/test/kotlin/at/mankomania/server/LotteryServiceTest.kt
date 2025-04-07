@@ -49,4 +49,13 @@ class LotteryServiceTest {
         assertEquals(0, lotteryService.getPoolAmount())
     }
 
+    @Test
+    fun landingOnEmptyPool() {
+        assertEquals(0, lotteryService.getPoolAmount())
+        val result = lotteryService.processLandingOnLottery(richPlayer)
+        assertTrue(result.success)
+        assertEquals(50000, richPlayer.balance)
+        assertEquals(50000, lotteryService.getPoolAmount())
+    }
+
 }
