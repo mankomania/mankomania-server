@@ -52,4 +52,14 @@ class BoardTest {
             "Branch cells should be at indices 3 and 7."
         )
     }
+
+    @Test
+    fun customBoardShouldHaveCorrectCellCount() {
+        // The customBoard was initialized with 5 cells
+        assertEquals(5, customBoard.size, "Custom board should have exactly 5 cells.")
+    }
+
+
+
+
 }
