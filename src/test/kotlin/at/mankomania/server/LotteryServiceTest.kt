@@ -28,4 +28,12 @@ class LotteryServiceTest {
         assertEquals(initialPool + 5000, lotteryService.getPoolAmount())
     }
 
+    @Test
+    fun processPassingLottery() {
+        val initialPool = lotteryService.getPoolAmount()
+        assertTrue(lotteryService.processPassingLottery(richPlayer))
+        assertEquals(95000, richPlayer.balance)
+        assertEquals(initialPool + 5000, lotteryService.getPoolAmount())
+    }
+
 }
