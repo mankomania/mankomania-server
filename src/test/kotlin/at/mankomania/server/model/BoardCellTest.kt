@@ -48,5 +48,22 @@ class BoardCellTest {
         assertEquals(CellState.OCCUPIED, boardCell.state, "BoardCell should transition to OCCUPIED after landOn.")
     }
 
+    @Test
+    fun landOnShouldUpdateStateRegardlessOfBranch() {
+        // Arrange: Create a branching cell
+        val branchCell = BoardCell(
+            index = 10,
+            hasBranch = true,
+            branchOptions = listOf(20, 25),
+            action = null
+        )
+        val player = Player("TestPlayer")
+
+        // Act
+        branchCell.landOn(player, gameControllerMock)
+
+        // Assert: Even though it's a branching cell, once the player lands, the state should become OCCUPIED
+        assertEquals(CellState.OCCUPIED, branchCell.state)
+    }
 
 }
