@@ -1,4 +1,4 @@
 package at.mankomania.server.model
 
-class Player {
-}
+data class Player(val id: String, var balance: Int)
+
