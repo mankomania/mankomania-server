@@ -6,7 +6,7 @@
  */
 package at.mankomania.server.util
 
-
+//this is a dice roller/ wrapper. It delegates the roll
 class Dice(private val strategy: DiceStrategy) {
     /**
      * Rolls the dice using the provided strategy.
