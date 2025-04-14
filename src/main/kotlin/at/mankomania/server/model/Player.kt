@@ -10,7 +10,8 @@ package at.mankomania.server.model
 data class Player(
     val name: String,
     var position: Int = 0,
-    var balance: Int = 0
+    var balance: Int = 0,
+    var money: MutableMap<Int, Int>? = null //  money field added for issue numeber 10
 ) {
     /**
      * Moves the player forward on the board by a given number of steps.
@@ -72,4 +73,18 @@ data class Player(
     fun getCurrentPosition(): Int {
         return position
     }
+}
+/**
+ * Assigns the starting money to the player if not already set.
+ * The total amount is 1,000,000 divided into specific denominations.
+ */
+fun assignStartingMoney() {
+    if (money != null) return // Prevent overwriting if already assigned
+
+    money = mutableMapOf(
+        5000 to 10,
+        10000 to 5,
+        50000 to 4,
+        100000 to 7
+    )
 }
