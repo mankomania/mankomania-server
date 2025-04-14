@@ -151,3 +151,41 @@ class PlayerTest {
         assertEquals(22, player.getCurrentPosition())
     }
 }
+// ------------------------------------------------
+// Starting money tests
+// ------------------------------------------------
+
+/**
+ * Verifies that the starting money is assigned correctly with the expected denominations.
+ */
+@Test
+fun assignStartingMoneyAssignsCorrectDenominations() {
+    player.assignStartingMoney()
+
+    val expectedMoney = mapOf(
+        5000 to 10,
+        10000 to 5,
+        50000 to 4,
+        100000 to 7
+    )
+
+    assertEquals(expectedMoney, player.money)
+
+    // Check total sum is exactly 1,000,000
+    val total = player.money!!.entries.sumOf { it.key * it.value }
+    assertEquals(1_000_000, total)
+}
+
+/**
+ * Verifies that assignStartingMoney does not overwrite existing money.
+ */
+@Test
+fun assignStartingMoneyIsIdempotent() {
+    // Simulate existing money
+    player.money = mutableMapOf(100000 to 10)
+
+    player.assignStartingMoney()
+
+    val expectedMoney = mapOf(100000 to 10)
+    assertEquals(expectedMoney, player.money)
+}
