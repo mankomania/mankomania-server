@@ -1,5 +1,4 @@
 package at.mankomania.server.model
-
 /**
  * @author eles17
  * Represents a player in the game.
@@ -10,7 +9,8 @@ package at.mankomania.server.model
 data class Player(
     val name: String,
     var position: Int = 0,
-    var balance: Int = 0
+    var balance: Int = 0,
+    var money: MutableMap<Int, Int>? = null
 ) {
     /**
      * Moves the player forward on the board by a given number of steps.
