@@ -1,5 +1,7 @@
 package at.mankomania.server.model
 
+import at.mankomania.server.util.DiceResult
+
 /**
  * @author eles17
  * Represents a player in the game.
@@ -10,7 +12,8 @@ package at.mankomania.server.model
 data class Player(
     val name: String,
     var position: Int = 0,
-    var balance: Int = 0
+    var balance: Int = 0,
+    val diceHistory: MutableList<DiceResult> = mutableListOf()
 ) {
     /**
      * Moves the player forward on the board by a given number of steps.
@@ -71,5 +74,13 @@ data class Player(
      */
     fun getCurrentPosition(): Int {
         return position
+    }
+
+    /**
+     * stores the result of each dice roll in diceHistory.
+     * whenever dice is rolled it can be called
+     */
+    fun Player.recordDiceRoll(result: DiceResult) {
+        diceHistory.add(result)
     }
 }
