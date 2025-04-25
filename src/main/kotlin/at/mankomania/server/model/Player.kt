@@ -13,7 +13,7 @@ data class Player(
     val name: String,
     var position: Int = 0,
     var balance: Int = 0,
-    val diceHistory: MutableList<DiceResult> = mutableListOf()
+    val diceHistory: MutableList<DiceResult> = mutableListOf(),
     var money: MutableMap<Int, Int>? = null
 ) {
     /**
@@ -81,7 +81,7 @@ data class Player(
      * stores the result of each dice roll in diceHistory.
      * whenever dice is rolled it can be called
      */
-    fun Player.recordDiceRoll(result: DiceResult) {
+    fun recordDiceRoll(result: DiceResult) {
         diceHistory.add(result)
     }
 }
