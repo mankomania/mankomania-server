@@ -4,9 +4,14 @@ package at.mankomania.server.controller
  * @author eles17
  * @since 25.4.2025
  * @description
- *  PlayerController is responsible for handling player-specific actions such as rolling dice.
- *  It listens to WebSocket messages and sends back real-time results using messaging topics.
- *  The controller is designed for extensibility as more player actions (e.g., movement, purchases) are added.
+ * PlayerController handles player-specific WebSocket messages, such as rolling dice.
+ *
+ * It listens to incoming STOMP messages (e.g., "/app/rollDice") and processes the requested action.
+ * Once the dice are rolled, the result is logged, stored in the player's history, and broadcasted
+ * to the appropriate WebSocket topic (e.g., "/topic/diceResult/{playerId}").
+ *
+ * This controller is designed for extensibility as the game adds more player-driven features,
+ * such as movement, mini-games, and purchases.
  */
 import at.mankomania.server.model.Player
 import at.mankomania.server.util.DefaultDiceStrategy
@@ -17,6 +22,20 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 
 
+/**
+ * Handles a WebSocket message for rolling dice on behalf of a specific player.
+ *
+ * @param playerId the unique identifier of the player (sent from the client).
+ *
+ * Behavior:
+ * - Finds the player using the provided ID.
+ * - Rolls two dice using the game's DiceStrategy.
+ * - Stores the result in the player's history.
+ * - Logs the rolled values to the console.
+ * - Sends the result to the client subscribed to "/topic/diceResult/{playerId}".
+ *
+ * This method enables real-time, turn-based feedback for multiplayer gameplay.
+ */
 @Controller
 class PlayerController(private val messagingTemplate: SimpMessagingTemplate) {
 
