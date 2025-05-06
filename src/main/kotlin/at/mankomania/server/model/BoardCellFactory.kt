@@ -17,7 +17,12 @@ object BoardCellFactory {
      * @param action The action to be executed on the cell.
      * @return A new `BoardCell` instance.
      */
-    fun createBoardCell(index: Int, hasBranch: Boolean, branchOptions: List<Int> = emptyList(), action: CellAction? = null): BoardCell {
+    fun createBoardCell(
+        index: Int,
+        hasBranch: Boolean,
+        branchOptions: List<Int> = emptyList(),
+        action: CellAction?    = null
+    ): BoardCell {
         return BoardCell(index, hasBranch = hasBranch, branchOptions = branchOptions, action = action)
     }
 }
