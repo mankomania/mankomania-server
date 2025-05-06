@@ -1,7 +1,7 @@
 package at.mankomania.server.model
 
 /**
- * @author eles17
+ * @author eles17, Angela Drucks
  * Represents the game board made up of multiple fields.
  *
  * There are two ways to create a board:
@@ -30,5 +30,5 @@ class Board (val cells: List<BoardCell>) {
      * @param index The index of the field to retrieve.
      * @return The field at the given index, wrapped around if necessary.
      */
-    fun getField(index:Int): BoardCell = cells [index % cells.size]
+    fun getCell(index:Int): BoardCell = cells [index % cells.size]
 }

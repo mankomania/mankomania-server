@@ -28,7 +28,7 @@ data class Player(
 
         //retrieve the field once and check for branch
         val currentField =
-            board.getField(position) //Board.getField(position) must return a Field with populated branchOptions if hasBranch == true
+            board.getCell(position) //Board.getField(position) must return a Field with populated branchOptions if hasBranch == true
         return if (currentField.hasBranch) {
             chooseBranch(currentField.branchOptions)
             true
@@ -45,7 +45,7 @@ data class Player(
      * @return True if the current field has a branch; false otherwise.
      */
     fun hasBranch(board: Board): Boolean {
-        return board.getField(position).hasBranch
+        return board.getCell(position).hasBranch
     }
 
     /**
