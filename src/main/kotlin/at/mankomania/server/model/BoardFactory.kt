@@ -17,7 +17,15 @@ object BoardFactory {
      */
     fun createBoard(size: Int, isBranchField: (Int) -> Boolean): Board {
         val cells = List(size) { index ->
-            BoardCellFactory.createBoardCell(index, hasBranch = isBranchField(index))
+            BoardCellFactory.createBoardCell(
+                index,
+                hasBranch     = isBranchField(index),
+                branchOptions = if (isBranchField(index))
+                    listOf((index + 5) % size)  // Beispiel-Branch-Ziel
+                else
+                    emptyList(),
+                action        = null            // später befüllen
+            )
         }
         return Board(cells)
     }
