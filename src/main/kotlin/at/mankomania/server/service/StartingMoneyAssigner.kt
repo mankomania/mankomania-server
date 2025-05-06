@@ -25,6 +25,8 @@ class StartingMoneyAssigner {
 
         player.balance = totalAmount
         player.money = denominations.toMutableMap()
+
+        println("Assigned €$totalAmount to player ${player.name} in denominations: $denominations")
     }
 
     /**
