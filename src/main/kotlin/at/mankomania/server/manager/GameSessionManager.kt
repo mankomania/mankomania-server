@@ -10,10 +10,12 @@ import at.mankomania.server.controller.GameController
 import at.mankomania.server.model.BoardFactory
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.StartingMoneyAssigner
+import org.springframework.stereotype.Service
 
 /**
  * Manages player joining, session startup, and active game controllers.
  */
+@Service
 class GameSessionManager {
     private val activeGames = mutableMapOf<String, GameController>()
     private val gamePlayers = mutableMapOf<String, MutableList<Player>>()
