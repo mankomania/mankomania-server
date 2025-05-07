@@ -72,4 +72,21 @@ class GameControllerTest {
         controller.landOnCell("Jorge", 3)
         verify(notificationService).sendPlayerLanded("Jorge", 3)
     }
+
+    @Test
+    fun `computeMoveResult should return correct MoveResult for a player move`() {
+        // Arrange: Toni is at position 0, board size is 5
+        val player = players.find { it.name == "Toni" }!!
+        player.position = 0
+// Act: move 2 steps forward
+        val result = controller.computeMoveResult("Toni", 2)
+
+        // Assert: result is not null and values are as expected
+        assert(result != null)
+        assert(result!!.oldPosition == 0)
+        assert(result.newPosition == 2)
+        assert(result.fieldType == "NoAction") // Default as no action set
+        assert(result.fieldDescription == "No description available")
+        assert(result.playersOnField.isEmpty())
+    }
 }
