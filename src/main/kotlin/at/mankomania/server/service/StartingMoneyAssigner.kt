@@ -1,7 +1,9 @@
 package at.mankomania.server.service
 
 import at.mankomania.server.model.Player
+import org.springframework.stereotype.Service
 
+@Service
 class StartingMoneyAssigner {
 
     private val denominations: Map<Int, Int> = mapOf(
