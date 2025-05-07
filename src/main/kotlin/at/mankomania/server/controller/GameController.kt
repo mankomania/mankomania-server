@@ -9,6 +9,7 @@
 package at.mankomania.server.controller
 
 import at.mankomania.server.model.Board
+import at.mankomania.server.model.MoveResult
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
@@ -38,6 +39,32 @@ class GameController(
         val branched = player.move(steps, board)
         if (!branched) landOnCell(playerId, player.position)
         notificationService.sendPlayerMoved(playerId, player.position)
+    }
+
+    /*
+    * Calculates the result of a player's move for the UI, including updated position,
+    * field description, and other players on the same field.
+    *
+    * @param playerId The name of the player who is moving.
+    * @param steps Number of steps the player will move.
+    * @return A MoveResult DTO with position and field data, or null if player not found.
+    */
+    fun computeMoveResult(playerId: String, steps: Int): MoveResult? {
+        val player = players.find{ it.name == playerId} ?: return null
+        val oldPos = player.position
+        val branched = player.move(steps, board)
+        if(!branched) landOnCell(playerId, player.position)
+
+        val currentField = board.getCell(player.position)
+        val others = players.filter { it.name != playerId && it.position == player.position }.map {it.name}
+
+        return MoveResult(
+            newPosition = player.position,
+            oldPosition = oldPos,
+            fieldType = currentField.action?.javaClass?.simpleName ?: "NoAction",
+            fieldDescription = currentField.action?.description ?: "No description available",
+            playersOnField = others
+        )
     }
 
     /**
