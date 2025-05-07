@@ -51,7 +51,7 @@ class GameSessionManager(
      * Returns the list of start positions, or null on failure.
      */
     fun startSession(gameId: String, size: Int): List<Int>? {
-        val players = gamePlayers[gameId] ?: return null
+        val players = gamePlayers[gameId]?.toList() ?: return null
         if (players.size < 2) return null
 
         // 1) Assign starting money
