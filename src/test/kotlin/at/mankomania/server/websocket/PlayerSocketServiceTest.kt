@@ -85,4 +85,60 @@ class PlayerSocketServiceTest {
         assertEquals("/topic/player/DebtGuy/money", dummyTemplate.lastDestination)
         assertEquals(player.money, dummyTemplate.lastPayload)
     }
+
+    // New test cases
+
+    @Test
+    fun sendFinancialState_should_handle_large_money_values() {
+        val dummyTemplate = DummyMessagingTemplate()
+        val service = PlayerSocketService.PlayerSocketService(dummyTemplate)
+        val player = Player(
+            name = "RichPlayer",
+            money = mutableMapOf(
+                Int.MAX_VALUE to Int.MAX_VALUE,
+                1000000000 to 1000000
+            )
+        )
+
+        service.sendFinancialState(player)
+
+        assertEquals("/topic/player/RichPlayer/money", dummyTemplate.lastDestination)
+        assertEquals(player.money, dummyTemplate.lastPayload)
+    }
+
+    @Test
+    fun sendFinancialState_should_handle_special_characters_in_name() {
+        val dummyTemplate = DummyMessagingTemplate()
+        val service = PlayerSocketService.PlayerSocketService(dummyTemplate)
+        val player = Player(
+            name = "Player!@#$%^&*()",
+            money = mutableMapOf(1000 to 5)
+        )
+
+        service.sendFinancialState(player)
+
+        assertEquals("/topic/player/Player!@#$%^&*()/money", dummyTemplate.lastDestination)
+        assertEquals(player.money, dummyTemplate.lastPayload)
+    }
+
+    @Test
+    fun sendFinancialState_should_handle_multiple_denominations() {
+        val dummyTemplate = DummyMessagingTemplate()
+        val service = PlayerSocketService.PlayerSocketService(dummyTemplate)
+        val player = Player(
+            name = "MultiDenomPlayer",
+            money = mutableMapOf(
+                1 to 5,
+                5 to 3,
+                10 to 2,
+                50 to 1,
+                100 to 4
+            )
+        )
+
+        service.sendFinancialState(player)
+
+        assertEquals("/topic/player/MultiDenomPlayer/money", dummyTemplate.lastDestination)
+        assertEquals(player.money, dummyTemplate.lastPayload)
+    }
 }
