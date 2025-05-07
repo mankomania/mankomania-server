@@ -18,11 +18,11 @@ import at.mankomania.server.service.NotificationService
 class GameController(
     private val board: Board,
     private val players: List<Player>,
-    private val bankService: BankService = BankService(),
+    private val bankService: BankService = BankService(), //future action
     private val notificationService: NotificationService
 ) {
 
-    private var currentPlayerIndex = 0
+
     /**
      * Called once when a game session starts.
      */
@@ -41,14 +41,14 @@ class GameController(
         notificationService.sendPlayerMoved(playerId, player.position)
     }
 
-    /*
+    /**
     * Calculates the result of a player's move for the UI, including updated position,
     * field description, and other players on the same field.
     *
     * @param playerId The name of the player who is moving.
     * @param steps Number of steps the player will move.
     * @return A MoveResult DTO with position and field data, or null if player not found.
-    */
+    **/
     fun computeMoveResult(playerId: String, steps: Int): MoveResult? {
         val player = players.find{ it.name == playerId} ?: return null
         val oldPos = player.position
