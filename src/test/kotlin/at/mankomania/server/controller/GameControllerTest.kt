@@ -78,7 +78,7 @@ class GameControllerTest {
         // Arrange: Toni is at position 0, board size is 5
         val player = players.find { it.name == "Toni" }!!
         player.position = 0
-// Act: move 2 steps forward
+        // Act: move 2 steps forward
         val result = controller.computeMoveResult("Toni", 2)
 
         // Assert: result is not null and values are as expected
@@ -88,5 +88,39 @@ class GameControllerTest {
         assert(result.fieldType == "NoAction") // Default as no action set
         assert(result.fieldDescription == "No description available")
         assert(result.playersOnField.isEmpty())
+    }
+
+    /**
+     * Test case: Player wraps around the board.
+     * Verifies that a player starting near the end of the board and moving past the last cell wraps around to the beginning.
+     */
+    @Test
+    fun `computeMoveResult should wrap around board correctly`() {
+        val player = players.find { it.name == "Toni" }!!
+        player.position = 4 // last field on 5-cell board
+
+        val result = controller.computeMoveResult("Toni", 2)
+
+        assert(result != null)
+        assert(result!!.oldPosition == 4)
+        assert(result.newPosition == 1) // (4 + 2) % 5 = 1
+    }
+
+    /**
+     * Test case: Player lands on a field occupied by others.
+     * Verifies that the response includes the names of other players already on that field.
+     */
+    @Test
+    fun `computeMoveResult should include players already on the field`() {
+        val toni = players.find { it.name == "Toni" }!!
+        val jorge = players.find { it.name == "Jorge" }!!
+        toni.position = 0
+        jorge.position = 2
+
+        val result = controller.computeMoveResult("Toni", 2)
+
+        assert(result != null)
+        assert(result!!.playersOnField.contains("Jorge"))
+        assert(result.playersOnField.size == 1)
     }
 }
