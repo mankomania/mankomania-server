@@ -1,12 +1,12 @@
 package at.mankomania.server.websocket
 
 import at.mankomania.server.model.Player
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.simp.SimpMessagingTemplate
+import kotlin.test.Test
 
 class PlayerSocketServiceTest {
 
