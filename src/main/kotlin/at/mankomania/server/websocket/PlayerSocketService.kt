@@ -21,10 +21,9 @@ class PlayerSocketService(private val messagingTemplate: SimpMessagingTemplate) 
      */
     fun sendFinancialState(player: Player) {
         val destination = "/topic/player/${player.name}/money"
-        val moneyMap = player.money?.toMap() ?: run {
-            logger.warn("Player ${player.name} has no financial state (money is null). Sending an empty map.")
-            emptyMap()
+        val moneyMap = player.money?.toMap()
+        if (moneyMap != null) {
+            messagingTemplate.convertAndSend(destination, moneyMap)
         }
-        messagingTemplate.convertAndSend(destination, moneyMap)
     }
 }
