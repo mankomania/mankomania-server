@@ -2,9 +2,13 @@ package at.mankomania.server.manager
 
 import at.mankomania.server.controller.GameController
 import at.mankomania.server.model.Player
+import at.mankomania.server.service.BankService
+import at.mankomania.server.service.NotificationService
+import at.mankomania.server.service.StartingMoneyAssigner
 import kotlin.test.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.mock
 
 class GameSessionManagerTest {
 
@@ -13,14 +17,22 @@ class GameSessionManagerTest {
 
     @BeforeEach
     fun setUp() {
-        sessionManager = GameSessionManager()
+        // Dependencies für den Manager bereitstellen (Bank, MoneyAssigner, Notification sind beans im echten App-Kontext)
+        val moneyAssigner = StartingMoneyAssigner()
+        val bankService = BankService()
+        val notificationService = mock(NotificationService::class.java)
+
+        sessionManager = GameSessionManager(
+            moneyAssigner,
+            bankService,
+            notificationService
+        )
     }
 
     @Test
     fun testJoinGameAddsNewPlayersAndPreventsDuplicates() {
         assertTrue(sessionManager.joinGame(gameId, "Franz"))
         assertTrue(sessionManager.joinGame(gameId, "Kafka"))
-        //duplicate one:
         assertFalse(sessionManager.joinGame(gameId, "Franz"))
 
         val players = sessionManager.getPlayers(gameId)
