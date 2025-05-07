@@ -67,6 +67,29 @@
 			<version>5.14.2</version> <!-- Die Version kannst du nach Bedarf anpassen -->
 			<scope>test</scope>
 		</dependency>
+		<!-- Kotlin Test API -->
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 5 API -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.10.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 5 Engine -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.10.2</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -100,6 +123,16 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.kt</include>
+					</includes>
+				</configuration>
+			</plugin>
 
 			<!-- JaCoCo Plugin -->
 			<plugin>
@@ -121,8 +154,8 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
+
 	</build>
 
 </project>
