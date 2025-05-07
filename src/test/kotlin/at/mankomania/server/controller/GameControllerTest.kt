@@ -48,6 +48,17 @@ class GameControllerTest {
         verify(notificationService).sendPlayerMoved("Toni", 2)
     }
 
+    /**
+     * movePlayer should do nothing if player is not found.
+     * Ensures no exceptions or calls are made for invalid player input.
+     */
+    @Test
+    fun `movePlayer should do nothing if player is not found`() {
+        controller.movePlayer("Ghost", 3)
+        verify(notificationService, never()).sendPlayerMoved(anyString(), anyInt())
+        verify(notificationService, never()).sendPlayerLanded(anyString(), anyInt())
+    }
+
     @Test
     fun `movePlayer on branch cell should only move`() {
         // Board mit Branch auf Feld 2
@@ -72,6 +83,15 @@ class GameControllerTest {
         controller.landOnCell("Jorge", 3)
         verify(notificationService).sendPlayerLanded("Jorge", 3)
     }
+    /**
+     * landOnCell should do nothing if player is not found.
+     * Ensures that no notifications are sent when a nonexistent player is passed.
+     */
+    @Test
+    fun `landOnCell should do nothing if player is not found`() {
+        controller.landOnCell("Ghost", 3)
+        verify(notificationService, never()).sendPlayerLanded(anyString(), anyInt())
+    }
 
     @Test
     fun `computeMoveResult should return correct MoveResult for a player move`() {
@@ -91,7 +111,7 @@ class GameControllerTest {
     }
 
     /**
-     * Test case: Player wraps around the board.
+     * Player wraps around the board.
      * Verifies that a player starting near the end of the board and moving past the last cell wraps around to the beginning.
      */
     @Test
@@ -107,7 +127,7 @@ class GameControllerTest {
     }
 
     /**
-     * Test case: Player lands on a field occupied by others.
+     * Player lands on a field occupied by others.
      * Verifies that the response includes the names of other players already on that field.
      */
     @Test
@@ -123,4 +143,14 @@ class GameControllerTest {
         assert(result!!.playersOnField.contains("Jorge"))
         assert(result.playersOnField.size == 1)
     }
+
+    /**
+     * computeMoveResult should return null if player is not found.
+     */
+    @Test
+    fun `computeMoveResult should return null if player is not found`() {
+        val result = controller.computeMoveResult("Ghost", 3)
+        assert(result == null)
+    }
+
 }
