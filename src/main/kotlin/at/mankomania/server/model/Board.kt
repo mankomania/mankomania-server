@@ -1,6 +1,7 @@
 package at.mankomania.server.model
 
 /**
+ * @file Board.kt
  * @author eles17, Angela Drucks
  * Represents the game board made up of multiple fields.
  *
@@ -13,6 +14,8 @@ package at.mankomania.server.model
  */
 
 // TOUPDATE: Replace with official Board implementation once merged by [TeammateName]
+
+
 class Board (val cells: List<BoardCell>) {
 
     val size: Int = cells.size
