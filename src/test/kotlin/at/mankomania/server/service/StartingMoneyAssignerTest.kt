@@ -1,44 +1,41 @@
 package at.mankomania.server.service
 
 import at.mankomania.server.model.Player
-import org.junit.jupiter.api.Assertions.assertEquals
+import at.mankomania.server.websocket.PlayerSocketService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.*
+import kotlin.test.assertEquals
 
-class StartingMoneyAssignerTest {
+class StartingMoneyAssignerWithSocketTest {
 
-    private val assigner = StartingMoneyAssigner()
+    private lateinit var socketService: PlayerSocketService
+    private lateinit var assigner: StartingMoneyAssigner
 
-    @Test
-    fun `assign should give exactly 1_000_000 to a single player`() {
-        val player = Player(name = "Player1")
-
-        assigner.assign(player)
-
-        assertEquals(1_000_000, player.balance)
+    @BeforeEach
+    fun setUp() {
+        socketService = mock(PlayerSocketService::class.java)
+        assigner = StartingMoneyAssigner(socketService)
     }
 
     @Test
-    fun `assignToAll should assign 1_000_000 to each player`() {
-        val players = listOf(
-            Player(name = "Player1"),
-            Player(name = "Player2"),
-            Player(name = "Player3"),
-            Player(name = "Player4")
-        )
+    fun `assignToAll should notify only players who had no money`() {
+        val player1 = Player(name = "Player1", balance = 0, money = null)
+        val player2 = Player(name = "Player2", balance = 100_000, money = mutableMapOf(100_000 to 1))
+        val player3 = Player(name = "Player3", balance = 0, money = null)
+
+        val players = listOf(player1, player2, player3)
 
         assigner.assignToAll(players)
 
-        for (player in players) {
-            assertEquals(1_000_000, player.balance, "Player ${player.name} did not receive the correct amount")
-        }
-    }
+        assertEquals(550_000, player1.balance)
+        assertEquals(100_000, player2.balance)
+        assertEquals(550_000, player3.balance)
 
-    @Test
-    fun `assign should not overwrite existing player balance`() {
-        val player = Player(name = "Player1", balance = 500_000)
+        verify(socketService).sendFinancialState(player1)
+        verify(socketService, never()).sendFinancialState(player2)
+        verify(socketService).sendFinancialState(player3)
 
-        assigner.assign(player)
-
-        assertEquals(500_000, player.balance, "Player balance should not be overwritten")
+        verifyNoMoreInteractions(socketService)
     }
 }
