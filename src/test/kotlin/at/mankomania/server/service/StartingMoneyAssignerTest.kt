@@ -1,6 +1,5 @@
 package at.mankomania.server.service
 
-import at.mankomania.server.manager.StartingMoneyAssigner
 import at.mankomania.server.model.Player
 import at.mankomania.server.websocket.PlayerSocketService
 import org.junit.jupiter.api.BeforeEach
@@ -18,7 +17,6 @@ class StartingMoneyAssignerTest {
         socketService = mock(PlayerSocketService::class.java)
         assigner = StartingMoneyAssigner(socketService)
     }
-
     @Test
     fun `assign should give exactly 1_000_000 to a single player`() {
         val player = Player(name = "Player1")

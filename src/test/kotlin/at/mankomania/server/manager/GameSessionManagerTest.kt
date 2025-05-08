@@ -1,10 +1,10 @@
 package at.mankomania.server.manager
 
-import StartingMoneyAssigner
 import at.mankomania.server.controller.GameController
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
+import at.mankomania.server.service.StartingMoneyAssigner
 import at.mankomania.server.websocket.PlayerSocketService
 import kotlin.test.*
 import org.junit.jupiter.api.BeforeEach

@@ -1,4 +1,4 @@
-package at.mankomania.server.manager
+package at.mankomania.server.service
 
 import at.mankomania.server.model.Player
 import at.mankomania.server.websocket.PlayerSocketService

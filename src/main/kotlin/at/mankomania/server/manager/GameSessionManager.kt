@@ -11,6 +11,7 @@ import at.mankomania.server.model.BoardFactory
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
+import at.mankomania.server.service.StartingMoneyAssigner
 import at.mankomania.server.websocket.PlayerSocketService
 import org.springframework.stereotype.Service
 
