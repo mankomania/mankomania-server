@@ -1,10 +1,13 @@
 package at.mankomania.server.service
 
 import at.mankomania.server.model.Player
+import at.mankomania.server.websocket.PlayerSocketService
 import org.springframework.stereotype.Service
 
 @Service
-class StartingMoneyAssigner {
+class StartingMoneyAssigner(
+    private val playerSocketService: PlayerSocketService
+) {
 
     private val denominations: Map<Int, Int> = mapOf(
         5_000 to 10,
@@ -30,11 +33,12 @@ class StartingMoneyAssigner {
     }
 
     /**
-     * Assigns money to all players in a list.
+     * Assigns money to all players in a list and notifies via WebSocket.
      */
     fun assignToAll(players: List<Player>) {
         for (player in players) {
             assign(player)
+            playerSocketService.sendFinancialState(player)
         }
     }
 }
