@@ -50,6 +50,24 @@ class PlayerSocketServiceTest {
         assertEquals(player.money, dummyTemplate.lastPayload)
         assertEquals(1, dummyTemplate.messageCount)
     }
+    @Test
+    fun `sendFinancialState should not send anything if player money is null`() {
+        // Using the custom mock messaging template from your test class
+        val dummyTemplate = DummyMessagingTemplate()
+        val service = PlayerSocketService(dummyTemplate)
+
+        // Create a player with null money
+        val player = Player(name = "Player2")
+        player.money = null  // Setting money to null
+
+        // Call the method
+        service.sendFinancialState(player)
+
+        // Verify that no message was sent
+        assertEquals(0, dummyTemplate.messageCount)
+        assertEquals(null, dummyTemplate.lastDestination)
+        assertEquals(null, dummyTemplate.lastPayload)
+    }
 
     @Test
     fun sendFinancialState_should_handle_empty_player_name() {
