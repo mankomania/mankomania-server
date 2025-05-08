@@ -5,10 +5,12 @@ import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
 import at.mankomania.server.service.StartingMoneyAssigner
+import at.mankomania.server.websocket.PlayerSocketService
 import kotlin.test.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.springframework.messaging.simp.SimpMessagingTemplate
 
 class GameSessionManagerTest {
 
@@ -18,7 +20,9 @@ class GameSessionManagerTest {
     @BeforeEach
     fun setUp() {
         // Dependencies für den Manager bereitstellen (Bank, MoneyAssigner, Notification sind beans im echten App-Kontext)
-        val moneyAssigner = StartingMoneyAssigner()
+        val messagingTemplate = mock(SimpMessagingTemplate::class.java)
+        val playerSocketService = PlayerSocketService(messagingTemplate)
+        val moneyAssigner = StartingMoneyAssigner(playerSocketService)
         val bankService = BankService()
         val notificationService = mock(NotificationService::class.java)
 
