@@ -1,10 +1,12 @@
+package at.mankomania.server.manager
+
 import at.mankomania.server.model.Player
 import at.mankomania.server.websocket.PlayerSocketService
 import org.springframework.stereotype.Service
 
 @Service
 class StartingMoneyAssigner(
-    private val playerSocketService: PlayerSocketService // Dependency for sending financial state updates via WebSocket
+    private val playerSocketService: PlayerSocketService
 ) {
     // Denominations of money to be assigned to players, along with their respective counts
     private val denominations = mapOf(
@@ -35,7 +37,7 @@ class StartingMoneyAssigner(
         player.money = denominations.toMutableMap()
 
         // Send the updated financial state to the player via WebSocket
-        playerSocketService.sendFinancialState(player) // Notify the player about their new balance and money
+        playerSocketService.sendFinancialState(player)
     }
 
     /**
@@ -44,7 +46,6 @@ class StartingMoneyAssigner(
      * @param players List of players to assign money to
      */
     fun assignToAll(players: List<Player>) {
-        // Loop through each player and assign money
         players.forEach { assign(it) }
     }
 }

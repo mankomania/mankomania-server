@@ -6,7 +6,6 @@
  */
 
 package at.mankomania.server.manager
-import StartingMoneyAssigner
 import at.mankomania.server.controller.GameController
 import at.mankomania.server.model.BoardFactory
 import at.mankomania.server.model.Player
