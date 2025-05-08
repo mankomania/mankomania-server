@@ -5,6 +5,7 @@ import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
 import at.mankomania.server.service.StartingMoneyAssigner
+import at.mankomania.server.websocket.PlayerSocketService
 import kotlin.test.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,19 +15,18 @@ class GameSessionManagerTest {
 
     private lateinit var sessionManager: GameSessionManager
     private val gameId = "testGame"
-
     @BeforeEach
     fun setUp() {
-        // Dependencies für den Manager bereitstellen (Bank, MoneyAssigner, Notification sind beans im echten App-Kontext)
-        val moneyAssigner = StartingMoneyAssigner()
+        val playerSocketService = mock(PlayerSocketService::class.java)
+        val moneyAssigner = StartingMoneyAssigner(playerSocketService)
         val bankService = BankService()
         val notificationService = mock(NotificationService::class.java)
 
         sessionManager = GameSessionManager(
             moneyAssigner,
             bankService,
-            notificationService
-        )
+            notificationService,
+            playerSocketService)
     }
 
     @Test

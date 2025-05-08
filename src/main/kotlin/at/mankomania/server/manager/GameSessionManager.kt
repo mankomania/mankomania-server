@@ -12,6 +12,7 @@ import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
 import at.mankomania.server.service.StartingMoneyAssigner
+import at.mankomania.server.websocket.PlayerSocketService
 import org.springframework.stereotype.Service
 
 /**
@@ -21,7 +22,8 @@ import org.springframework.stereotype.Service
 class GameSessionManager(
     private val moneyAssigner: StartingMoneyAssigner,
     private val bankService: BankService,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private val playerSocketService: PlayerSocketService
 ) {
     private val activeGames = mutableMapOf<String, GameController>()
     private val gamePlayers = mutableMapOf<String, MutableList<Player>>()
