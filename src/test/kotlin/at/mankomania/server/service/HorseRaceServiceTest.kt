@@ -52,8 +52,6 @@ class HorseRaceServiceTest {
             Bet(playerId = "player3", horseColor = HorseColor.RED, amount = 50)
         )
         val winningColor = HorseColor.RED
-        val horseRaceService = HorseRaceService()
-
         val result = horseRaceService.calculateWinnings(bets, winningColor)
 
         assertEquals(200, result["player1"])
