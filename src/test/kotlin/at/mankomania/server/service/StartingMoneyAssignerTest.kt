@@ -1,6 +1,6 @@
 package at.mankomania.server.service
 
-import StartingMoneyAssigner
+import at.mankomania.server.manager.StartingMoneyAssigner
 import at.mankomania.server.model.Player
 import at.mankomania.server.websocket.PlayerSocketService
 import org.junit.jupiter.api.BeforeEach
