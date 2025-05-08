@@ -12,7 +12,6 @@ class StartingMoneyAssigner(
     )
 
     private val totalAmount = denominations.entries.sumOf { it.key * it.value }
-
     fun assign(player: Player) {
         if (player.balance > 0) {
             println("Player ${player.name} already has money. Skipping.")
