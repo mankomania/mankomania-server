@@ -10,8 +10,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
+        registry.enableSimpleBroker("/topic", "/queue", "/user")
         registry.enableSimpleBroker("/topic")
         registry.setApplicationDestinationPrefixes("/app")
+        registry.setUserDestinationPrefix("/user")
+
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
@@ -19,4 +22,6 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
             .setAllowedOriginPatterns("*")
             // .withSockJS() <- for the moment removed, in order to test local server/client communication
     }
+
+
 }

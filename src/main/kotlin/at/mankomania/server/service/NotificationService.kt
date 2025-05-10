@@ -6,7 +6,7 @@
  */
 package at.mankomania.server.service
 
-import at.mankomania.server.model.Player
+import at.mankomania.server.controller.dto.GameStateDto
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 
@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service
  */
 @Service
 class NotificationService(private val messagingTemplate: SimpMessagingTemplate) {
-    fun sendGameState(players: List<Player>) {
-        messagingTemplate.convertAndSend("/topic/game/state", players)
+
+    /* Full snapshot – players + board */
+    fun sendGameState(state: GameStateDto) {
+        messagingTemplate.convertAndSend("/topic/game/state", state)
     }
 
     fun sendPlayerMoved(playerId: String, position: Int) {
