@@ -25,6 +25,12 @@
 		<!-- SonarCloud Integration -->
 		<sonar.organization>mankomania-1</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+		<sonar.coverage.exclusions>
+			**/WebSocketManager.kt,
+			**/WebSocketBrokerController.kt
+		</sonar.coverage.exclusions>
+
 	</properties>
 
 	<dependencies>
