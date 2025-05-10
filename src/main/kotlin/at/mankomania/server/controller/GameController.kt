@@ -8,6 +8,7 @@
 
 package at.mankomania.server.controller
 
+import at.mankomania.server.controller.dto.GameStateDto
 import at.mankomania.server.model.Board
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
@@ -26,8 +27,9 @@ class GameController(
      * Called once when a game session starts.
      */
     fun startGame() {
-        // Broadcast initial state
-        notificationService.sendGameState(players)
+        // Broadcast full game state (players + board)
+        val state = GameStateDto(players, board.cells)
+        notificationService.sendGameState(state)
     }
 
     /**
