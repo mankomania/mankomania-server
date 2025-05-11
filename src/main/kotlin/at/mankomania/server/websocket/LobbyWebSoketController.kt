@@ -41,6 +41,15 @@ class LobbyWebSocketController(
                     playerCount = if (success) playerCount else null
                 )
             }
+            "start" -> {
+                logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
+                LobbyResponse(
+                    type = "start",
+                    lobbyId = message.lobbyId ?: "unknown",
+                    playerName = message.playerName,
+                    playerCount = null
+                )
+            }
 
             else -> LobbyResponse(
                 type = "error",
