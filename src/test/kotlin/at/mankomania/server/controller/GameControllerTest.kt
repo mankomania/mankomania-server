@@ -1,5 +1,6 @@
 package at.mankomania.server.controller
 
+import at.mankomania.server.controller.dto.GameStateDto
 import at.mankomania.server.model.Board
 import at.mankomania.server.model.BoardCell
 import at.mankomania.server.model.BoardFactory
@@ -11,34 +12,39 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.mock
+import org.mockito.Mock
 import org.mockito.Mockito.never
-import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.Mockito.verify
-
+import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 class GameControllerTest {
 
     private lateinit var board: Board
     private lateinit var players: List<Player>
-    private lateinit var bankService: BankService
-    private lateinit var notificationService: NotificationService
     private lateinit var controller: GameController
+
+    @Mock
+    private lateinit var notificationService: NotificationService
+
+    @Mock
+    private lateinit var bankService: BankService
 
     @BeforeEach
     fun setUp() {
-        board = BoardFactory.createBoard(5) { false }
+        board   = BoardFactory.createBoard(5) { false }
         players = listOf(Player("Toni"), Player("Jorge"))
-        bankService = mock(BankService::class.java)
-        notificationService = mock(NotificationService::class.java)
         controller = GameController(board, players, bankService, notificationService)
     }
 
     @Test
-    fun `startGame should broadcast initial state`() {
+    fun `startGame should broadcast correct initial state`() {
+        val expectedDto = GameStateDto(players, board.cells)
+
         controller.startGame()
-        verify(notificationService).sendGameState(players)
+
+        // direkte Objektreferenz, Data-Klassen haben equals() implementiert
+        verify(notificationService).sendGameState(expectedDto)
     }
 
     @Test
@@ -50,14 +56,13 @@ class GameControllerTest {
 
     @Test
     fun `movePlayer on branch cell should only move`() {
-        // Board mit Branch auf Feld 2
         board = Board(
             listOf(
-                BoardCell(index = 0, hasBranch = false),
-                BoardCell(index = 1, hasBranch = false),
-                BoardCell(index = 2, hasBranch = true, branchOptions = listOf(4)),
-                BoardCell(index = 3, hasBranch = false),
-                BoardCell(index = 4, hasBranch = false)
+                BoardCell(0, hasBranch = false),
+                BoardCell(1, hasBranch = false),
+                BoardCell(2, hasBranch = true, branchOptions = listOf(4)),
+                BoardCell(3, hasBranch = false),
+                BoardCell(4, hasBranch = false)
             )
         )
         controller = GameController(board, players, bankService, notificationService)
