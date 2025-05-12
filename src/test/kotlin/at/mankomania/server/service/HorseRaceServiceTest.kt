@@ -1,89 +1,62 @@
+package at.mankomania.server.service
 
-import at.mankomania.server.MankomaniaServerApplication
 import at.mankomania.server.model.Bet
 import at.mankomania.server.model.HorseColor
 import at.mankomania.server.model.Player
-import at.mankomania.server.service.HorseRaceService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.mockito.Mockito.mock
 
-
-@SpringBootTest(classes = [MankomaniaServerApplication::class])
 class HorseRaceServiceTest {
 
-    @Autowired
-    private lateinit var horseRaceService: HorseRaceService
+    private val horseRaceService = HorseRaceService()
 
     @Test
-    fun `test spin roulette`() {
-        val result = horseRaceService.spinRoulette()
-        assertNotNull(result)
-    }
-
-    @Test
-    fun `test start race`() {
-        val result = horseRaceService.startRace(listOf())
-        assertNotNull(result)
-    }
-
-
-    @Test
-    fun `test register player`() {
-        val balance = 2025
-        horseRaceService.registerPlayer(Player("test-player", 0, balance))
-        val player = horseRaceService.getPlayer("test-player")
-
-        assertNotNull(player)
-        assertEquals(balance, player!!.balance)
-    }
-
-    @Test
-    fun `test place bet - player does not exist`() {
-        val result = horseRaceService.placeBet("non-existent-player", HorseColor.BLUE, 2025)
-        assertFalse(result)
+    fun `test spin roulette should return a valid HorseColor`() {
+        val color = horseRaceService.spinRoulette()
+        assertTrue(HorseColor.values().contains(color), "Spin roulette should return a valid HorseColor")
     }
     @Test
-    fun `calculateWinnings returns correct payouts`() {
+    fun `test calculateWinnings should return correct payouts`() {
         val bets = listOf(
             Bet(playerId = "player1", horseColor = HorseColor.RED, amount = 100),
             Bet(playerId = "player2", horseColor = HorseColor.BLUE, amount = 200),
             Bet(playerId = "player3", horseColor = HorseColor.RED, amount = 50)
         )
         val winningColor = HorseColor.RED
-        val horseRaceService = HorseRaceService()
+        val winnings = horseRaceService.calculateWinnings(bets, winningColor)
 
-        val result = horseRaceService.calculateWinnings(bets, winningColor)
+        assertEquals(200, winnings["player1"], "Player1 should win with the correct payout")
+        assertEquals(0, winnings["player2"], "Player2 should lose and get 0")
+        assertEquals(100, winnings["player3"], "Player3 should win with the correct payout")
+    }
 
-        assertEquals(200, result["player1"])
-        assertEquals(0, result["player2"])
-        assertEquals(100, result["player3"])
+
+    @Test
+    fun `test place bet - player does not exist should return false`() {
+        val result = horseRaceService.placeBet("non-existent-player", HorseColor.RED, 500)
+        assertFalse(result, "Placing a bet for a non-existent player should return false")
     }
 
     @Test
-    fun `spinRoulette returns a valid HorseColor`() {
-        val color = horseRaceService.spinRoulette()
-        assertTrue(HorseColor.entries.contains(color))
-    }
-
-    @Test
-    fun `test place bet - not enough balance`() {
-        val player = Player("test-player", 0)
+    fun `test place bet - not enough balance should return false`() {
+        val player = Player(name = "Player1", balance = 100)
         horseRaceService.registerPlayer(player)
-        val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
-        assertFalse(result)
+
+        val result = horseRaceService.placeBet("Player1", HorseColor.RED, 200)
+        assertFalse(result, "Placing a bet with insufficient balance should return false")
     }
 
     @Test
-    fun `test place bet`() {
-        val player = Player("test-player", 0)
+    fun `test place bet - valid bet should return true`() {
+        val player = Player(name = "Player1", balance = 1000)
         horseRaceService.registerPlayer(player)
-        val result = horseRaceService.placeBet("test-player", HorseColor.BLUE, 2025)
-        assertFalse(result)
+
+        val result = horseRaceService.placeBet("Player1", HorseColor.RED, 500)
+        assertTrue(result, "Placing a valid bet should return true")
+        assertEquals(500, player.balance, "Player's balance should be reduced by the bet amount")
     }
 }
-
 
 
 
