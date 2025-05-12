@@ -23,11 +23,13 @@ class LobbyWebSocketController(
         return when (message.type) {
             "create" -> {
                 val lobby = lobbyService.createLobby(message.lobbyId!!, message.playerName)
+                val playerNames = lobby.players.map { it.name }
                 LobbyResponse(
                     type = "created",
                     lobbyId = lobby.lobbyId,
                     playerName = message.playerName,
-                    playerCount = lobby.players.size
+                    playerCount = lobby.players.size,
+                    players = playerNames
                 )
             }
 
@@ -43,11 +45,16 @@ class LobbyWebSocketController(
             }
             "start" -> {
                 logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
+
+                val lobby = lobbyService.getLobby(message.lobbyId ?: "unknown")
+                val playerNames = lobby?.players?.map { it.name } ?: emptyList()
+
                 LobbyResponse(
                     type = "start",
                     lobbyId = message.lobbyId ?: "unknown",
                     playerName = message.playerName,
-                    playerCount = null
+                    playerCount = playerNames.size,
+                    players = playerNames
                 )
             }
 

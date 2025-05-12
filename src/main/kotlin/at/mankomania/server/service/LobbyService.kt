@@ -29,5 +29,9 @@ class LobbyService {
     fun getPlayers(lobbyId: String): List<Player> {
         return lobbies[lobbyId]?.players ?: emptyList()
     }
+    fun getLobby(lobbyId: String): Lobby? {
+        return lobbies[lobbyId]
+    }
+
 }
 
