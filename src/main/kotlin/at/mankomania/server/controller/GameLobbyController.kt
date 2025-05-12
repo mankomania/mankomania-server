@@ -1,6 +1,10 @@
 /*
+
+ATTENTION: OUTDATED – replaced by LobbyWebSocketController.
+
+
  * src/main/kotlin/at/mankomania/server/controller/GameLobbyController.kt
- */
+
 package at.mankomania.server.controller
 
 import at.mankomania.server.controller.dto.JoinDto
@@ -48,3 +52,5 @@ class GameLobbyController(
         return ResponseEntity.ok(GameStartedDto(gameId, startPositions))
     }
 }
+
+ */
