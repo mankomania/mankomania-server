@@ -62,7 +62,7 @@ class PlayerControllerTest {
         diceField.set(controller, Dice { diceResult })
 
         // Act
-        controller.handleDiceRoll(playerId)
+        controller.handleDiceRoll("default", playerId)
 
         // Assert
         val topicCaptor = ArgumentCaptor.forClass(String::class.java)
@@ -90,7 +90,7 @@ class PlayerControllerTest {
         `when`(sessionManager.getGameController("default")).thenReturn(null)
 
         // Act
-        controller.handleDiceRoll("player1")
+        controller.handleDiceRoll("default", "player1")
 
         // Assert: no messages at all
         verifyNoInteractions(messagingTemplate)
@@ -113,7 +113,7 @@ class PlayerControllerTest {
         diceField.set(controller, Dice { diceResult })
 
         // Act
-        controller.handleDiceRoll(playerId)
+        controller.handleDiceRoll("default", playerId)
 
         // Assert: no messages at all
         verifyNoInteractions(messagingTemplate)

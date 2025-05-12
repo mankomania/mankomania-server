@@ -4,7 +4,9 @@ import at.mankomania.server.controller.dto.DiceMoveResultDto
 import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.util.DefaultDiceStrategy
 import at.mankomania.server.util.Dice
+import org.slf4j.LoggerFactory
 import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
@@ -29,28 +31,34 @@ class PlayerController(
     // Dice roller using the default (random) strategy
     private val dice = Dice(DefaultDiceStrategy())
 
+    companion object {
+        private val log = LoggerFactory.getLogger(PlayerController::class.java)
+    }
+
     /**
      * Handles incoming WebSocket dice roll messages from the frontend.
      *
      * @param playerId the identifier of the player who initiated the dice roll
      */
-    @MessageMapping("/rollDice")
-    fun handleDiceRoll(@Payload playerId: String) {
-        val gameId = "default" // MUST BE IMPLEMENTED: Replace with session-based or mapped game ID
+    @MessageMapping("/rollDice/{gameId}")
+    fun handleDiceRoll(@DestinationVariable gameId: String, @Payload playerId: String) {
 
         val controller = sessionManager.getGameController(gameId)
         if (controller == null) {
-            println("Game not found for gameId: $gameId")
+            log.warn("Game not found for gameId: {}", gameId)
             return
         }
 
         // Roll the dice
         val diceResult = dice.roll()
 
+        // Store the dice result in the player's history for game state tracking
+        controller.getPlayer(playerId)?.recordDiceRoll(diceResult)
+
         // Apply movement logic and get resulting field data
         val moveResult = controller.computeMoveResult(playerId, diceResult.sum)
         if (moveResult == null) {
-            println("Move failed for player: $playerId")
+            log.warn("Move failed for player: {}", playerId)
             return
         }
 
