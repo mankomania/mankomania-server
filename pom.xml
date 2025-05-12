@@ -34,7 +34,8 @@
 			**/Application.kt,
 			**/websocket/**,
 			**/controller/dto/**,
-			**/service/LobbyService*
+			**/service/LobbyService*,
+			**/model/LobbyInfo.kt
 		</sonar.coverage.exclusions>
 		<sonar.exclusions>
 			**/build/**, **/.idea/**, **/generated/**, local.properties
