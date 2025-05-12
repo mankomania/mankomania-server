@@ -1,4 +1,3 @@
-
 package at.mankomania.server.controller
 
 import at.mankomania.server.controller.dto.DiceMoveResultDto
@@ -10,13 +9,14 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 
+
 /**
  * @file PlayerController.kt
  * @author eles17
  * @since 25.04.2025
  * @description
  * PlayerController handles WebSocket-based actions triggered by players, such as rolling dice.
- * When a dice roll is received from the client, it applies movement logic and sends back
+ * When a die roll is received from the client, it applies movement logic and sends back
  * a combined result (dice + field) via STOMP to the client.
  *
  * This controller delegates all gameplay logic to GameSessionManager and GameController.
@@ -36,7 +36,7 @@ class PlayerController(
      */
     @MessageMapping("/rollDice")
     fun handleDiceRoll(@Payload playerId: String) {
-        val gameId = "default" // TO BE DONE: Replace with session-based or mapped game ID
+        val gameId = "default" // MUST BE IMPLEMENTED: Replace with session-based or mapped game ID
 
         val controller = sessionManager.getGameController(gameId)
         if (controller == null) {
