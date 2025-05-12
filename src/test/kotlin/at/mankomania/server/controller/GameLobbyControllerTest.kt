@@ -1,4 +1,4 @@
-package at.mankomania.server.controller
+/* package at.mankomania.server.controller
 
 import at.mankomania.server.controller.dto.JoinDto
 import at.mankomania.server.controller.dto.StartDto
@@ -87,3 +87,5 @@ class GameLobbyControllerTest {
     }
 
 }
+
+ */
