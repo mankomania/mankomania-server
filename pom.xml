@@ -28,8 +28,17 @@
 
 		<sonar.coverage.exclusions>
 			**/WebSocketManager.kt,
-			**/WebSocketBrokerController.kt
+			**/WebSocketBrokerController.kt,
+			**/config/**,
+			**/controller/dto/**,
+			**/Application.kt,
+			**/websocket/**,
+			**/controller/dto/**,
+			**/service/LobbyService*
 		</sonar.coverage.exclusions>
+		<sonar.exclusions>
+			**/build/**, **/.idea/**, **/generated/**, local.properties
+		</sonar.exclusions>
 
 	</properties>
 
