@@ -35,14 +35,17 @@ class LobbyWebSocketController(
 
             "join" -> {
                 val success = lobbyService.joinLobby(message.lobbyId!!, message.playerName)
-                val playerCount = lobbyService.getPlayers(message.lobbyId).size
+                val players = lobbyService.getPlayers(message.lobbyId).map { it.name }
+
                 LobbyResponse(
                     type = if (success) "joined" else "join-failed",
                     lobbyId = message.lobbyId,
                     playerName = message.playerName,
-                    playerCount = if (success) playerCount else null
+                    playerCount = if (success) players.size else null,
+                    players = if (success) players else null
                 )
             }
+
             "start" -> {
                 logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
 
