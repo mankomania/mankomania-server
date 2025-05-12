@@ -1,4 +1,7 @@
 package at.mankomania.server.model
+
+import at.mankomania.server.util.DiceResult
+
 /**
  * @author eles17
  * Represents a player in the game.
@@ -10,6 +13,7 @@ data class Player(
     val name: String,
     var position: Int = 0,
     var balance: Int = 0,
+    val diceHistory: MutableList<DiceResult> = mutableListOf(),
     var money: MutableMap<Int, Int>? = null
 ) {
     /**
@@ -71,5 +75,13 @@ data class Player(
      */
     fun getCurrentPosition(): Int {
         return position
+    }
+
+    /**
+     * stores the result of each dice roll in diceHistory.
+     * whenever dice is rolled it can be called
+     */
+    fun recordDiceRoll(result: DiceResult) {
+        diceHistory.add(result)
     }
 }

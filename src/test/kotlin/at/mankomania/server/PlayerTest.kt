@@ -150,4 +150,17 @@ class PlayerTest {
         player.position = 22
         assertEquals(22, player.getCurrentPosition())
     }
+
+
+    /**
+     * Verifies that the dice roll result is correctly stored in the player's history.
+     */
+    @Test
+    fun recordDiceRollStoresResult() {
+        val result = at.mankomania.server.util.DiceResult(2, 5)
+        player.recordDiceRoll(result)
+
+        assertEquals(1, player.diceHistory.size)
+        assertEquals(result, player.diceHistory.first())
+    }
 }
