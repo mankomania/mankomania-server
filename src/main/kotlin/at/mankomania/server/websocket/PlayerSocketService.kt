@@ -23,4 +23,22 @@ class PlayerSocketService(private val messagingTemplate: SimpMessagingTemplate) 
             messagingTemplate.convertAndSend(destination, moneySnapshot)
         }
     }
+
+    /**
+     * Broadcasts the current state of the given player to all clients.
+     * Includes name, position, balance, and denomination map.
+     * This allows all players to see up-to-date game states of others.
+     *
+     * @param player The player whose state should be broadcast.
+     */
+    fun broadcastPlayerStatus(player: Player) {
+        val destination = "/topic/player/${player.name}/status"
+        val state = mapOf(
+            "name" to player.name,
+            "position" to player.position,
+            "balance" to player.balance,
+            "money" to player.money
+        )
+        messagingTemplate.convertAndSend(destination, state)
+    }
 }
