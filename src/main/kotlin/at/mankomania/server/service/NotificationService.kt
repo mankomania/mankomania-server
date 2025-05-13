@@ -34,4 +34,20 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
             mapOf("player" to playerId, "position" to position)
         )
     }
+    /**
+     * Sends the full player status over WebSocket.
+     * Includes name, position, balance, and money (denominations).
+     *
+     * @param player the player whose full state should be sent
+     */
+    fun sendPlayerStatus(player: Player) {
+        val destination = "/topic/player/${player.name}/status"
+        val payload = mapOf(
+            "name" to player.name,
+            "position" to player.position,
+            "balance" to player.balance,
+            "money" to player.money
+        )
+        messagingTemplate.convertAndSend(destination, payload)
+    }
 }
