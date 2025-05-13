@@ -165,7 +165,16 @@ class GameControllerTest {
         val result = controller.computeMoveResult("Ghost", 3)
         assert(result == null)
     }
+    @Test
+    fun `movePlayer should send status for multiple players in sequence`() {
+        val toni = players.first { it.name == "Toni" }
+        val jorge = players.first { it.name == "Jorge" }
 
+        controller.movePlayer("Toni", 1)
+        controller.movePlayer("Jorge", 2)
 
+        verify(notificationService, atLeastOnce()).sendPlayerStatus(toni)
+        verify(notificationService, atLeastOnce()).sendPlayerStatus(jorge)
+    }
 
 }
