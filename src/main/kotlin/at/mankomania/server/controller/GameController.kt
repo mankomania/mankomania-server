@@ -30,6 +30,7 @@ class GameController(
     fun startGame() {
         // Broadcast full game state (players + board)
         val state = GameStateDto(players, board.cells)
+        println("🟢 GameStateDto: $state")
         notificationService.sendGameState(state)
     }
 
