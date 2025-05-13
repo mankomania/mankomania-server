@@ -201,4 +201,31 @@ class PlayerSocketServiceTest {
 
         assertNotNull(service)
     }
+
+    @Test
+    fun broadcastPlayerStatus_should_send_full_player_state_to_status_topic() {
+        val dummyTemplate = DummyMessagingTemplate()
+        val service = PlayerSocketService(dummyTemplate)
+        val player = Player(
+            name = "StatusTestPlayer",
+            position = 4,
+            balance = 250000,
+            money = mutableMapOf(5000 to 5, 10000 to 2)
+        )
+
+        service.broadcastPlayerStatus(player)
+
+        assertEquals("/topic/player/StatusTestPlayer/status", dummyTemplate.lastDestination)
+        assertEquals(
+            mapOf(
+                "name" to "StatusTestPlayer",
+                "position" to 4,
+                "balance" to 250000,
+                "money" to mapOf(5000 to 5, 10000 to 2)
+            ),
+            dummyTemplate.lastPayload
+        )
+        assertEquals(1, dummyTemplate.messageCount)
+    }
+
 }
