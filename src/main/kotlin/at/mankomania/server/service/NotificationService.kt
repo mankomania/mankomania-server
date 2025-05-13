@@ -9,6 +9,7 @@ package at.mankomania.server.service
 import at.mankomania.server.controller.dto.GameStateDto
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
+import at.mankomania.server.model.Player
 
 /**
  * Sends game updates to clients via WebSocket (STOMP).
@@ -42,7 +43,7 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
      */
     fun sendPlayerStatus(player: Player) {
         val destination = "/topic/player/${player.name}/status"
-        val payload = mapOf(
+        val payload: Map<String, Any?> = mapOf(
             "name" to player.name,
             "position" to player.position,
             "balance" to player.balance,
