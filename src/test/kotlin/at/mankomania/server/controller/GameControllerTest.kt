@@ -13,8 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
@@ -54,13 +53,21 @@ class GameControllerTest {
         verify(notificationService).sendPlayerMoved("Toni", 2)
     }
 
+    @Test
+    fun `movePlayer should trigger sendPlayerStatus twice when no branch occurs`() {
+        controller.movePlayer("Toni", 1)
+
+        verify(notificationService).sendPlayerMoved("Toni", 1)
+        verify(notificationService, times(2)).sendPlayerStatus(players.find { it.name == "Toni" }!!)
+    }
+
     /**
      * movePlayer should do nothing if player is not found.
      * Ensures no exceptions or calls are made for invalid player input.
      */
     @Test
     fun `movePlayer should do nothing if player is not found`() {
-        controller.movePlayer("Ghost", 3)
+        controller.movePlayer("InvalidName", 3)
         verify(notificationService, never()).sendPlayerMoved(anyString(), anyInt())
         verify(notificationService, never()).sendPlayerLanded(anyString(), anyInt())
     }
@@ -157,6 +164,17 @@ class GameControllerTest {
     fun `computeMoveResult should return null if player is not found`() {
         val result = controller.computeMoveResult("Ghost", 3)
         assert(result == null)
+    }
+    @Test
+    fun `movePlayer should send status for multiple players in sequence`() {
+        val toni = players.first { it.name == "Toni" }
+        val jorge = players.first { it.name == "Jorge" }
+
+        controller.movePlayer("Toni", 1)
+        controller.movePlayer("Jorge", 2)
+
+        verify(notificationService, atLeastOnce()).sendPlayerStatus(toni)
+        verify(notificationService, atLeastOnce()).sendPlayerStatus(jorge)
     }
 
 }

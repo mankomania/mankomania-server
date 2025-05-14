@@ -41,6 +41,7 @@ class GameController(
         val branched = player.move(steps, board)
         if (!branched) landOnCell(playerId, player.position)
         notificationService.sendPlayerMoved(playerId, player.position)
+        notificationService.sendPlayerStatus(player)
     }
 
     /**
@@ -84,6 +85,7 @@ class GameController(
         val player = players.find { it.name == playerId } ?: return
         board.getCell(cellIndex).landOn(player, this)
         notificationService.sendPlayerLanded(playerId, cellIndex)
+        notificationService.sendPlayerStatus(player)
     }
 
 }
