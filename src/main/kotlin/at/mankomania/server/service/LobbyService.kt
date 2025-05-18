@@ -22,6 +22,10 @@ class LobbyService {
     fun joinLobby(lobbyId: String, playerName: String): Boolean {
         val lobby = lobbies[lobbyId]
         if (lobby == null || lobby.players.size >= 4) return false
+        if (lobby.players.any { it.name == playerName }) {
+            println("🔁 Spieler '$playerName' ist bereits in Lobby '$lobbyId' – wird ignoriert.")
+            return true
+        }
         lobby.players.add(Player(playerName))
         return true
     }
