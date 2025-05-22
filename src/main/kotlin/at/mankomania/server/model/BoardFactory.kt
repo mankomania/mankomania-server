@@ -17,6 +17,10 @@ object BoardFactory {
      */
     fun createBoard(size: Int, isBranchField: (Int) -> Boolean): Board {
         val cells = List(size) { index ->
+            val action = when (index) {
+                10, 26, 42, 58 -> MinigamePlaceholderAction() // dummy actions
+                else -> null // everything else empty for now
+            }
             BoardCellFactory.createBoardCell(
                 index,
                 hasBranch     = isBranchField(index),

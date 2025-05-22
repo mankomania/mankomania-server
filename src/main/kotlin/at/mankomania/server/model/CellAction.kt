@@ -8,11 +8,12 @@ import at.mankomania.server.controller.GameController
  *
  * @property description A brief explanation of what the action does.
  */
-abstract class CellAction(open val description: String) {
+abstract class CellAction {
     /**
      * Executes the action for a player on the given game controller.
      * @param player The player who landed on the cell.
      * @param gameController The game controller managing the game state.
      */
-    abstract fun execute(player: Player, gameController: GameController)
+    abstract val description: String
+    abstract fun execute(player: Player, controller: GameController)
 }
