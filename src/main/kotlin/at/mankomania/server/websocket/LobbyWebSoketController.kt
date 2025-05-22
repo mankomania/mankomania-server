@@ -84,6 +84,14 @@ class LobbyWebSocketController(
                     players = playerNames
                 )
             }
+            else -> {
+                LobbyResponse(
+                    type = "error",
+                    lobbyId = message.lobbyId ?: "unknown",
+                    playerName = message.playerName,
+                    playerCount = null
+                )
+            }
         }
     }
 }
