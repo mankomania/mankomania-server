@@ -12,9 +12,9 @@ import org.springframework.stereotype.Controller
 @Controller
 class LobbyWebSocketController(
     private val lobbyService: LobbyService
+    private val notificationService: NotificationService
 ) {
     private val logger = LoggerFactory.getLogger(LobbyWebSocketController::class.java)
-
     @MessageMapping("/lobby") // z.B. /app/lobby
     @SendTo("/topic/lobby")   // z.B. /topic/lobby für alle Clients
     fun handleLobbyAction(@Payload message: LobbyMessage): LobbyResponse {
@@ -50,7 +50,30 @@ class LobbyWebSocketController(
                 logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
 
                 val lobby = lobbyService.getLobby(message.lobbyId ?: "unknown")
-                val playerNames = lobby?.players?.map { it.name } ?: emptyList()
+                if (lobby == null) {
+                    logger.warn("Tried to start game, but lobby not found!")
+                    return LobbyResponse(
+                        type = "error",
+                        lobbyId = message.lobbyId ?: "unknown",
+                        playerName = message.playerName,
+                        playerCount = null
+                    )
+                }
+
+                // Spielfeld mit 64 Zellen erstellen, Branch-Zellen bei 8, 24, 40, 56
+                val board = at.mankomania.server.model.BoardFactory.createBoard(64) { index ->
+                    index in listOf(8, 24, 40, 56)
+                }
+
+                // GameController instanziieren und Spielzustand senden
+                val controller = at.mankomania.server.controller.GameController(
+                    board = board,
+                    players = lobby.players,
+                    notificationService = notificationService
+                )
+                controller.startGame()
+
+                val playerNames = lobby.players.map { it.name }
 
                 LobbyResponse(
                     type = "start",
@@ -60,13 +83,6 @@ class LobbyWebSocketController(
                     players = playerNames
                 )
             }
-
-            else -> LobbyResponse(
-                type = "error",
-                lobbyId = message.lobbyId ?: "unknown",
-                playerName = message.playerName,
-                playerCount = null
-            )
         }
     }
 }
