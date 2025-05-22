@@ -1,4 +1,5 @@
 package at.mankomania.server.model
+import at.mankomania.server.model.actions.MinigamePlaceholderAction
 
 /**
  * @file BoardFactory.kt
