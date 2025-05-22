@@ -8,10 +8,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Controller
+import at.mankomania.server.service.NotificationService
 
 @Controller
 class LobbyWebSocketController(
-    private val lobbyService: LobbyService
+    private val lobbyService: LobbyService,
     private val notificationService: NotificationService
 ) {
     private val logger = LoggerFactory.getLogger(LobbyWebSocketController::class.java)
