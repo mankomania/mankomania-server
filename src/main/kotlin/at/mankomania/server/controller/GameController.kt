@@ -17,10 +17,12 @@ import at.mankomania.server.service.NotificationService
 
 
 class GameController(
+    private val gameId: String,
     private val board: Board,
     private val players: List<Player>,
     private val bankService: BankService = BankService(), //future action
     private val notificationService: NotificationService
+
 ) {
 
 
@@ -30,7 +32,7 @@ class GameController(
     fun startGame() {
         // Broadcast full game state (players + board)
         val state = GameStateDto(players, board.cells)
-        notificationService.sendGameState(state)
+        notificationService.sendGameState(gameId, state)
     }
 
     /**
