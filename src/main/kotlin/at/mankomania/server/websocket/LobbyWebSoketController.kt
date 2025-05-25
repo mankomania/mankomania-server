@@ -24,35 +24,37 @@ class LobbyWebSocketController(
 
         return when (message.type) {
             "create" -> {
+                // Create in both lobbyService and sessionManager
                 val lobby = lobbyService.createLobby(message.lobbyId!!, message.playerName)
+                sessionManager.joinGame(lobby.lobbyId, message.playerName)
                 val names = lobby.players.map { it.name }
-                LobbyResponse("created", lobby.lobbyId, message.playerName, lobby.players.size, names)
+                LobbyResponse("created", lobby.lobbyId, message.playerName, names.size, names)
             }
 
             "join" -> {
-                val ok = lobbyService.joinLobby(message.lobbyId!!, message.playerName)
-                val names = lobbyService.getPlayers(message.lobbyId).map { it.name }
+                // Join in both lobbyService and sessionManager
+                val okService = lobbyService.joinLobby(message.lobbyId!!, message.playerName)
+                val okSession = sessionManager.joinGame(message.lobbyId, message.playerName)
+                val players = lobbyService.getPlayers(message.lobbyId).map { it.name }
                 LobbyResponse(
-                    type       = if (ok) "joined" else "join-failed",
-                    lobbyId    = message.lobbyId,
+                    type = if (okService && okSession) "joined" else "join-failed",
+                    lobbyId = message.lobbyId,
                     playerName = message.playerName,
-                    playerCount= if (ok) names.size else null,
-                    players    = if (ok) names else null
+                    playerCount = if (okService && okSession) players.size else null,
+                    players = if (okService && okSession) players else null
                 )
             }
 
             "start" -> {
                 logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
 
-                // 1) Spiel-Session initialisieren
-                val boardSize = 20  // falls variabel: aus DTO übergeben
-                sessionManager.startSession(message.lobbyId!!, boardSize)
+                // Ensure sessionManager has correct players
+                // Players already added on create/join
 
-                // 2) Erstes GameStateDto broadcasten
-                val controller = sessionManager.getGameController(message.lobbyId)!!
-                controller.startGame()
+                // Start game session and broadcast
+                sessionManager.startSession(message.lobbyId!!, /* boardSize = */ 20)
+                sessionManager.getGameController(message.lobbyId)?.apply { startGame() }
 
-                // 3) LobbyResponse zurück, damit der Client wechselt
                 val names = lobbyService.getPlayers(message.lobbyId).map { it.name }
                 LobbyResponse("start", message.lobbyId, message.playerName, names.size, names)
             }
