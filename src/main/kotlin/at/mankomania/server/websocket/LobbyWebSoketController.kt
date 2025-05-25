@@ -9,6 +9,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Controller
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @Controller
 class LobbyWebSocketController(
@@ -48,15 +50,19 @@ class LobbyWebSocketController(
             "start" -> {
                 logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
 
-                // Ensure sessionManager has correct players
-                // Players already added on create/join
-
-                // Start game session and broadcast
+                // start the session
                 sessionManager.startSession(message.lobbyId!!, /* boardSize = */ 20)
-                sessionManager.getGameController(message.lobbyId)?.apply { startGame() }
 
+                // prepare response to client
                 val names = lobbyService.getPlayers(message.lobbyId).map { it.name }
-                LobbyResponse("start", message.lobbyId, message.playerName, names.size, names)
+                val response = LobbyResponse("start", message.lobbyId, message.playerName, names.size, names)
+
+                // Delay initial GameState broadcast by 200ms so client subscription can be set up
+                Executors.newSingleThreadScheduledExecutor().schedule({
+                    sessionManager.getGameController(message.lobbyId)?.startGame()
+                }, 200, TimeUnit.MILLISECONDS)
+
+                return response
             }
 
             else -> LobbyResponse("error", message.lobbyId ?: "unknown", message.playerName)
