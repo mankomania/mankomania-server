@@ -18,8 +18,8 @@ import at.mankomania.server.model.Player
 class NotificationService(private val messagingTemplate: SimpMessagingTemplate) {
 
     /* Full snapshot – players + board */
-    fun sendGameState(state: GameStateDto) {
-        messagingTemplate.convertAndSend("/topic/game/state", state)
+    fun sendGameState(lobbyId: String, state: GameStateDto) {
+        messagingTemplate.convertAndSend("/topic/game/state/$lobbyId", state)
     }
 
     fun sendPlayerMoved(playerId: String, position: Int) {

@@ -1,10 +1,6 @@
 package at.mankomania.server.service
-/**
- * @file NotificationServiceTest.kt
- * @author eles17
- * @since 13.5.2025
- * @description Unit tests for NotificationService, verifying WebSocket message sending logic.
- */
+
+import at.mankomania.server.controller.dto.GameStateDto
 import at.mankomania.server.model.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,12 +18,45 @@ class NotificationServiceTest {
         notificationService = NotificationService(messagingTemplate)
     }
 
-    /**
-    * Verifies that the sendPlayerStatus method correctly constructs the WebSocket message
-    * with full player state and sends it to the appropriate destination topic.
-    */
     @Test
-    fun `sendPlayerStatus should push correct WebSocket message`() {
+    fun `sendGameState should broadcast full game state to correct topic`() {
+        val state = GameStateDto(
+            players = listOf(),
+            board = listOf()
+        )
+
+        notificationService.sendGameState("LOBBY1", state)
+
+        Mockito.verify(messagingTemplate).convertAndSend(
+            "/topic/game/state/LOBBY1",
+            state
+        )
+    }
+
+    @Test
+    fun `sendPlayerMoved should broadcast move event to correct topic`() {
+        notificationService.sendPlayerMoved("Alice", 3)
+
+        val expected = mapOf("player" to "Alice", "position" to 3)
+        Mockito.verify(messagingTemplate).convertAndSend(
+            "/topic/game/move",
+            expected
+        )
+    }
+
+    @Test
+    fun `sendPlayerLanded should broadcast landing event to correct topic`() {
+        notificationService.sendPlayerLanded("Bob", 5)
+
+        val expected = mapOf("player" to "Bob", "position" to 5)
+        Mockito.verify(messagingTemplate).convertAndSend(
+            "/topic/game/land",
+            expected
+        )
+    }
+
+    @Test
+    fun `sendPlayerStatus should broadcast full status to user topic`() {
         val player = Player(
             name = "TestUser",
             position = 6,
@@ -44,6 +73,9 @@ class NotificationServiceTest {
             "money" to mapOf(5000 to 6, 10000 to 2)
         )
 
-        Mockito.verify(messagingTemplate).convertAndSend("/topic/player/TestUser/status", expectedPayload)
+        Mockito.verify(messagingTemplate).convertAndSend(
+            "/topic/player/TestUser/status",
+            expectedPayload
+        )
     }
 }

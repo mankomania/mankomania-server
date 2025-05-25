@@ -65,7 +65,7 @@ class GameSessionManager(
 
         // 3) Create board and controller
         val board = BoardFactory.createBoard(size) { idx -> idx % 10 == 0 }
-        val controller = GameController(board, players, bankService, notificationService)
+        val controller = GameController(gameId, board, players, bankService, notificationService)
         activeGames[gameId] = controller
 
         // 4) Start the game

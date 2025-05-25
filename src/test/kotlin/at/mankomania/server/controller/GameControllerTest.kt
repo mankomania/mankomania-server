@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 @ExtendWith(MockitoExtension::class)
 class GameControllerTest {
 
+    private val testGameId = "test123"
+
     private lateinit var board: Board
     private lateinit var players: List<Player>
     private lateinit var controller: GameController
@@ -33,7 +35,7 @@ class GameControllerTest {
     fun setUp() {
         board   = BoardFactory.createBoard(5) { false }
         players = listOf(Player("Toni"), Player("Jorge"))
-        controller = GameController(board, players, bankService, notificationService)
+        controller = GameController(testGameId, board, players, bankService, notificationService)
     }
 
     @Test
@@ -43,7 +45,7 @@ class GameControllerTest {
         controller.startGame()
 
         // direkte Objektreferenz, Data-Klassen haben equals() implementiert
-        verify(notificationService).sendGameState(expectedDto)
+        verify(notificationService).sendGameState(testGameId, expectedDto)
     }
 
     @Test
@@ -84,7 +86,7 @@ class GameControllerTest {
                 BoardCell(4, hasBranch = false)
             )
         )
-        controller = GameController(board, players, bankService, notificationService)
+        controller = GameController(testGameId, board, players, bankService, notificationService)
 
         controller.movePlayer("Toni", 2)
         verify(notificationService).sendPlayerMoved("Toni", 4)
