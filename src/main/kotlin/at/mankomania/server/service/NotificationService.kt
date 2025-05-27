@@ -6,6 +6,7 @@
  */
 package at.mankomania.server.service
 
+import at.mankomania.server.controller.dto.GameStartedDto
 import at.mankomania.server.controller.dto.GameStateDto
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
@@ -51,4 +52,17 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
         )
         messagingTemplate.convertAndSend(destination, payload)
     }
+
+    /**
+     * Sends the “game started” snapshot to every client in the lobby.
+     *
+     * STOMP destination: `/topic/game/started/{lobbyId}`
+     *
+     * @param lobbyId the identifier of the lobby / game session
+     * @param dto     the GameStartedDto with startPositions and firstPlayerIndex
+     */
+    fun sendGameStarted(lobbyId: String, dto: GameStartedDto) {
+        messagingTemplate.convertAndSend("/topic/game/started/$lobbyId", dto)
+    }
+
 }
