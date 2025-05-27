@@ -7,6 +7,7 @@
 
 package at.mankomania.server.manager
 import at.mankomania.server.controller.GameController
+import at.mankomania.server.controller.dto.GameStartedDto
 import at.mankomania.server.model.BoardFactory
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
@@ -45,30 +46,44 @@ class GameSessionManager(
         gamePlayers[gameId]?.toList() ?: emptyList()
 
     /**
-     * Starts a session if 2–4 players are present. On success:
-     * 1. Assign starting money
-     * 2. Calculate and set fair start positions
-     * 3. Build the board and create a GameController
-     * 4. Start the game
-     * Returns the list of start positions, or null on failure.
+     * Starts a new game session once 2–4 players are present.
+     *
+     * Workflow
+     * 1. Assign starting money to every player.
+     * 2. Calculate evenly spaced start positions based on `boardSize`.
+     * 3. Pick the first player randomly (`firstPlayerIndex`).
+     * 4. Build the board with the requested size and register a GameController.
+     * 5. Broadcast a `GameStartedDto` (startPositions + firstPlayerIndex) to all clients.
+     * 6. Broadcast the initial full `GameStateDto` so UIs can render the board.
+     *
+     * @param gameId     the lobby / game identifier
+     * @param boardSize  desired number of cells for the board
+     * @return the list of start positions, or `null` if the session cannot be started
      */
-    fun startSession(gameId: String, size: Int): List<Int>? {
+    fun startSession(gameId: String, boardSize: Int): List<Int>? {
         val players = gamePlayers[gameId]?.toList() ?: return null
         if (players.size < 2) return null
 
-        // 1) Assign starting money
+        // 1) assign starting money
         moneyAssigner.assignToAll(players)
 
-        // 2) Calculate fair, evenly spaced start positions
-        val startPositions = (0 until players.size).map { i -> (i * size) / players.size }
-        players.forEachIndexed { idx, player -> player.position = startPositions[idx] }
+        // 2) start positions (evenly spaced)
+        val startPositions = (players.indices).map { idx -> (idx * boardSize) / players.size }
+        players.forEachIndexed { idx, p -> p.position = startPositions[idx] }
 
-        // 3) Create board and controller
-        val board = BoardFactory.createBoard(size) { idx -> idx % 10 == 0 }
+        // 3) determine first player randomly
+        val firstIdx = kotlin.random.Random.nextInt(players.size)
+
+        // 4) create board & controller
+        val board = BoardFactory.createBoard(boardSize) { i -> i % 10 == 0 }
         val controller = GameController(gameId, board, players, bankService, notificationService)
         activeGames[gameId] = controller
 
-        // 4) Start the game
+        // 5) broadcast GameStartedDto
+        val dto = GameStartedDto(gameId, startPositions, firstIdx)
+        notificationService.sendGameStarted(gameId, dto)
+
+        // 6) broadcast initial full state
         controller.startGame()
 
         return startPositions
