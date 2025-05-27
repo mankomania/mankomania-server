@@ -1,5 +1,6 @@
 package at.mankomania.server
 
+// fixme this is unused
 object NumberChecker {
     fun describeNumber(n: Int): String {
         return when {

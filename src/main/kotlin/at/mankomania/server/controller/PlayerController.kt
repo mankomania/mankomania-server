@@ -35,6 +35,7 @@ class PlayerController(
         private val log = LoggerFactory.getLogger(PlayerController::class.java)
     }
 
+    // fixme you also compute the move result in the MoveController, consider merging
     /**
      * Handles incoming WebSocket dice roll messages from the frontend.
      *

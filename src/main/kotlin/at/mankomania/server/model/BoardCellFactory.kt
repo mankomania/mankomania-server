@@ -1,5 +1,6 @@
 package at.mankomania.server.model
 
+// fixme consider removing this factory if there is only one cell class and its just passing arguments to the constructor
 /**
  * @file BoardCellFactory.kt
  * @author Angela Drucks
