@@ -60,7 +60,7 @@ class GameSessionManager(
      * @param boardSize  desired number of cells for the board
      * @return the list of start positions, or `null` if the session cannot be started
      */
-    fun startSession(gameId: String, boardSize: Int): List<Int>? {
+    fun startSession(gameId: String, boardSize: Int): Pair<List<Int>, Int>? {
         val players = gamePlayers[gameId]?.toList() ?: return null
         if (players.size < 2) return null
 
@@ -83,10 +83,8 @@ class GameSessionManager(
         val dto = GameStartedDto(gameId, startPositions, firstIdx)
         notificationService.sendGameStarted(gameId, dto)
 
-        // 6) broadcast initial full state
-        controller.startGame()
-
-        return startPositions
+        // 6) initial GameState will be sent by WebSocket-controller after 200 ms
+        return startPositions to firstIdx
     }
 
     /**
