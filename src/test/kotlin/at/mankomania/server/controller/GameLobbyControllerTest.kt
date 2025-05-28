@@ -62,8 +62,7 @@ class GameLobbyControllerTest {
     fun `POST start returns 200 and positions when enough players`() {
         val gameId = "g1"
         val dto = StartDto(boardSize = 40)
-        given(sessionManager.startSession(gameId, 40)).willReturn(listOf(0,10))
-
+        given(sessionManager.startSession(gameId, 40)).willReturn(Pair(listOf(0, 10), 1))
         mvc.perform(post("/lobby/$gameId/start")
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(dto)))
@@ -71,6 +70,8 @@ class GameLobbyControllerTest {
             .andExpect(jsonPath("$.gameId").value(gameId))
             .andExpect(jsonPath("$.startPositions[0]").value(0))
             .andExpect(jsonPath("$.startPositions[1]").value(10))
+            .andExpect(jsonPath("$.firstPlayerIndex").value(1))
+
 
         verify(sessionManager).startSession(gameId, 40)
     }

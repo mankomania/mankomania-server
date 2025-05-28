@@ -68,10 +68,13 @@ class GameSessionManagerTest {
     fun testStartSessionAssignsCorrectStartPositions() {
         // join 3 players directly in this test
         listOf("P1", "P2", "P3").forEach { sessionManager.joinGame(gameId, it) }
-        val positions = sessionManager.startSession(gameId, 40)
-        assertNotNull(positions)
+        val result = sessionManager.startSession(gameId, 40)
+        assertNotNull(result)
+        val (positions, firstIdx) = result!!
         // expect evenly spaced positions: [0, 13, 26]
         assertEquals(listOf(0, 13, 26), positions)
+        // firstIdx sollte irgendwo zwischen 0 und 2 liegen
+        assertTrue(firstIdx in 0 until positions.size)
     }
 
     @Test
