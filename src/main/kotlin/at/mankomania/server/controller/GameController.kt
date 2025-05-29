@@ -8,7 +8,7 @@
 
 package at.mankomania.server.controller
 
-import at.mankomania.server.controller.dto.GameStateDto
+
 import at.mankomania.server.model.Board
 import at.mankomania.server.model.MoveResult
 import at.mankomania.server.model.Player
@@ -30,9 +30,8 @@ class GameController(
      * Called once when a game session starts.
      */
     fun startGame() {
-        // Broadcast full game state (players + board)
-        val state = GameStateDto(players, board.cells)
-        notificationService.sendGameState(gameId, state)
+        // Broadcast full game state (players + board) using DTO mapping
+        notificationService.sendGameStateFromModels(gameId, players, board.cells)
     }
 
     /**
@@ -88,6 +87,9 @@ class GameController(
         board.getCell(cellIndex).landOn(player, this)
         notificationService.sendPlayerLanded(playerId, cellIndex)
         notificationService.sendPlayerStatus(player)
+
+        // Broadcast full game state after a move
+        notificationService.sendGameStateFromModels(gameId, players, board.cells)
     }
 
 }

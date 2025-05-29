@@ -22,6 +22,32 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
         messagingTemplate.convertAndSend("/topic/game/state/$lobbyId", state)
     }
 
+    // Helper to convert server Player to PlayerDto
+    private fun toPlayerDto(player: Player): at.mankomania.server.controller.dto.PlayerDto {
+        return at.mankomania.server.controller.dto.PlayerDto(
+            name = player.name,
+            position = player.position
+        )
+    }
+
+    // Helper to convert BoardCell to CellDto
+    private fun toCellDto(cell: at.mankomania.server.model.BoardCell): at.mankomania.server.controller.dto.CellDto {
+        return at.mankomania.server.controller.dto.CellDto(
+            index = cell.index,
+            hasBranch = cell.hasBranch
+        )
+    }
+
+    /**
+     * Sends the game state using server models (Player, BoardCell), mapping to DTOs for the client.
+     */
+    fun sendGameStateFromModels(lobbyId: String, players: List<Player>, boardCells: List<at.mankomania.server.model.BoardCell>) {
+        val playerDtos = players.map { toPlayerDto(it) }
+        val cellDtos = boardCells.map { toCellDto(it) }
+        val state = at.mankomania.server.controller.dto.GameStateDto(playerDtos, cellDtos)
+        sendGameState(lobbyId, state)
+    }
+
     fun sendPlayerMoved(playerId: String, position: Int) {
         messagingTemplate.convertAndSend(
             "/topic/game/move",
