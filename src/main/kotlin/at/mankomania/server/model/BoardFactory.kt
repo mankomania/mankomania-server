@@ -29,4 +29,24 @@ object BoardFactory {
         }
         return Board(cells)
     }
+    fun createSimpleBoard(): Board {
+        val cells = mutableListOf<BoardCell>()
+
+        val branchFieldIndices = setOf(6, 14, 21, 30)
+        val startFieldIndices = setOf(0, 9, 18, 27)
+
+        for (i in 0 until 36) {
+            when {
+                i in startFieldIndices -> cells.add(BoardCell(index = i, hasBranch = false))
+                i in branchFieldIndices -> cells.add(
+                    BoardCell(index = i, hasBranch = true, branchOptions = listOf(100 + i))
+                )
+                else -> cells.add(BoardCell(index = i, hasBranch = false))
+            }
+        }
+
+        return Board(cells)
+    }
+
+
 }

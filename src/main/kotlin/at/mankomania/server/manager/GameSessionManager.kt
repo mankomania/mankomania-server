@@ -64,7 +64,7 @@ class GameSessionManager(
         players.forEachIndexed { idx, player -> player.position = startPositions[idx] }
 
         // 3) Create board and controller
-        val board = BoardFactory.createBoard(size) { idx -> idx % 10 == 0 }
+        val board = BoardFactory.createSimpleBoard()
         val controller = GameController(gameId, board, players, bankService, notificationService)
         activeGames[gameId] = controller
 
