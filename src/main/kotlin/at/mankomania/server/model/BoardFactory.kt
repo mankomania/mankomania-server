@@ -32,38 +32,35 @@ object BoardFactory {
     fun createSimpleBoard(): Board {
         val cells = mutableListOf<BoardCell>()
 
-        val startFieldIndices = setOf(0, 8, 13, 20)
+        val startFieldIndices = setOf(0, 12, 20, 32)
         val branchFieldMap = mapOf(
-            5 to listOf(24, 25),    // → M1
-            10 to listOf(26, 27),   // → M2
-            16 to listOf(28, 29),   // → M3
-            22 to listOf(30, 31)    // → M4
+            5 to listOf(6, 7, 8, 9),    // → M1
+            14 to listOf(15, 16, 17, 18),   // → M2
+            24 to listOf(25, 26, 27, 28),   // → M3
+            34 to listOf(35,36,37,38)    // → M4
         )
         val lotteryIndex = 3
-        val minigameIndices = setOf(25, 27, 29, 31)
 
-        for (i in 0 until 36) {
+        for (i in 0 until 40) {
             when {
-                i in startFieldIndices -> cells.add(BoardCell(index = i, hasBranch = false))
-                i == lotteryIndex -> {
-                    cells.add(BoardCell(index = i, hasBranch = false, isLottery = true))
-                }
-
-                i in branchFieldMap.keys -> {
-                    cells.add(
-                        BoardCell(index = i, hasBranch = true, branchOptions = branchFieldMap[i]!!)
-                    )
-                }
-                else -> cells.add(BoardCell(index = i, hasBranch = false))
+                i == lotteryIndex -> cells.add(BoardCell(index = i, hasBranch = false, type = "LOTTERY"))
+                i in startFieldIndices -> cells.add(BoardCell(index = i, hasBranch = false, type = "START"))
+                i in branchFieldMap.keys -> cells.add(BoardCell(index = i, hasBranch = true, branchOptions = branchFieldMap[i] ?: emptyList(), type = "BRANCH"))
+                else -> cells.add(BoardCell(index = i, hasBranch = false, type = "NORMAL"))
             }
         }
-        minigameIndices.forEach { i ->
-            cells.add(BoardCell(index = i, hasBranch = false, isMinigame = true))
-        }
 
+        var currentIndex = 40
+        for (branch in branchFieldMap.values) {
+            for (target in branch) {
+                cells.add(BoardCell(index = currentIndex++, hasBranch = false))
+            }
+        }
 
         return Board(cells)
     }
+
+
 
 
 }
