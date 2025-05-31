@@ -7,5 +7,5 @@ services:
       dockerfile: Dockerfile
     image: mankomania-backend:latest
     ports:
-      - "53210:8080"
+      - "53210:53210"
     restart: unless-stopped

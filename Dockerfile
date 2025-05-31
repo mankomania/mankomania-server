@@ -10,6 +10,6 @@ FROM openjdk:17-jdk
 WORKDIR /app
 COPY --from=builder /app/target/*.jar ./mankomania.jar
 
-# Spring Boot lauscht im Container auf 8080
-EXPOSE 8080
+# Spring Boot lauscht im Container auf 53210
+EXPOSE 53210
 ENTRYPOINT ["java","-jar","mankomania.jar"]
