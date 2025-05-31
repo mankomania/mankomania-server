@@ -34,7 +34,7 @@ object BoardFactory {
 
         val startFieldIndices = setOf(0, 12, 20, 32)
         val branchFieldMap = mapOf(
-            5 to listOf(6, 7, 8, 9),    // → M1
+            4 to listOf(6, 7, 8, 9),    // → M1
             14 to listOf(15, 16, 17, 18),   // → M2
             24 to listOf(25, 26, 27, 28),   // → M3
             34 to listOf(35,36,37,38)    // → M4
