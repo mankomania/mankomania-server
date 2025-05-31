@@ -32,18 +32,35 @@ object BoardFactory {
     fun createSimpleBoard(): Board {
         val cells = mutableListOf<BoardCell>()
 
-        val branchFieldIndices = setOf(6, 14, 21, 30)
-        val startFieldIndices = setOf(0, 9, 18, 27)
+        val startFieldIndices = setOf(0, 8, 13, 20)
+        val branchFieldMap = mapOf(
+            5 to listOf(24, 25),    // → M1
+            10 to listOf(26, 27),   // → M2
+            16 to listOf(28, 29),   // → M3
+            22 to listOf(30, 31)    // → M4
+        )
+        val lotteryIndex = 3
+        val minigameIndices = setOf(25, 27, 29, 31)
 
         for (i in 0 until 36) {
             when {
                 i in startFieldIndices -> cells.add(BoardCell(index = i, hasBranch = false))
-                i in branchFieldIndices -> cells.add(
-                    BoardCell(index = i, hasBranch = true, branchOptions = listOf(100 + i))
-                )
+                i == lotteryIndex -> {
+                    cells.add(BoardCell(index = i, hasBranch = false, isLottery = true))
+                }
+
+                i in branchFieldMap.keys -> {
+                    cells.add(
+                        BoardCell(index = i, hasBranch = true, branchOptions = branchFieldMap[i]!!)
+                    )
+                }
                 else -> cells.add(BoardCell(index = i, hasBranch = false))
             }
         }
+        minigameIndices.forEach { i ->
+            cells.add(BoardCell(index = i, hasBranch = false, isMinigame = true))
+        }
+
 
         return Board(cells)
     }

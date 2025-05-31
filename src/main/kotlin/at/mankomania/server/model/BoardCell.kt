@@ -21,7 +21,9 @@ data class BoardCell(
     var state: CellState = CellState.FREE,
     val hasBranch: Boolean,
     val branchOptions: List<Int> = emptyList(),
-    var action: CellAction? = null
+    var action: CellAction? = null,
+    val isLottery: Boolean = false,
+    val isMinigame: Boolean = false
 ) {
     /**
      * Handles a player landing on the cell.
