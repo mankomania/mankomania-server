@@ -59,7 +59,9 @@ class LobbyWebSocketController(
 
                 // Delay initial GameState broadcast by 200ms so client subscription can be set up
                 Executors.newSingleThreadScheduledExecutor().schedule({
-                    sessionManager.getGameController(message.lobbyId)?.startGame()
+                    //sessionManager.getGameController(message.lobbyId)?.startGame()
+                    // Do NOT call startGame() again here; already called by startSession()
+                    // sessionManager.getGameController(message.lobbyId)?.startGame()
                 }, 200, TimeUnit.MILLISECONDS)
 
                 return response
