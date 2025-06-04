@@ -59,9 +59,13 @@ class GameSessionManager(
         // 1) Assign starting money
         moneyAssigner.assignToAll(players)
 
-        // 2) Calculate fair, evenly spaced start positions
-        val startPositions = (0 until players.size).map { i -> (i * size) / players.size }
-        players.forEachIndexed { idx, player -> player.position = startPositions[idx] }
+        // 2) Exact Startpositions
+        val startPositions = listOf(0, 12, 32, 20)
+        players.forEachIndexed { idx, player ->
+            if (idx < startPositions.size) {
+                player.position = startPositions[idx]
+            }
+        }
 
         // 3) Create board and controller
         val board = BoardFactory.createSimpleBoard()
