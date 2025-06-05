@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.socket.messaging.SessionConnectEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
 
+// fixme just use an atomic integer as instance variable instead of the custom wrapper class if it has no extra purpose
 @Component
 class PresenceListener(
     private val counter: ClientCounter,

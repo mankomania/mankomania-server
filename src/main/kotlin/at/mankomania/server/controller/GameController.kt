@@ -42,6 +42,7 @@ class GameController(
         val player = players.find { it.name == playerId } ?: return
         val branched = player.move(steps, board)
         if (!branched) landOnCell(playerId, player.position)
+        // fixme avoid sending multiple messages for a single state over the network (race conditions/inconsistencies) -> merge into one call
         notificationService.sendPlayerMoved(playerId, player.position)
         notificationService.sendPlayerStatus(player)
     }

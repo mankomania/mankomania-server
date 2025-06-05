@@ -9,6 +9,7 @@ package at.mankomania.server.util
 // this is a dice roller/ wrapper. It delegates the roll
 
 class Dice(private val strategy: DiceStrategy) {
+    // fixme the diceresult just wraps the summed value of the roll(s), replace with int
     /**
      * Rolls the dice using the provided strategy.
      *
