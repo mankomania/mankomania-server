@@ -23,7 +23,7 @@ class NotificationServiceTest {
         val state = GameStateDto(
             players = listOf(),
             board = listOf(),
-            currentPlayer = "Dummy"
+            currentTurnPlayerName = "Dummy"
         )
 
         notificationService.sendGameState("LOBBY1", state)
