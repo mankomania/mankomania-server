@@ -21,7 +21,8 @@ class GameController(
     private val board: Board,
     private val players: List<Player>,
     private val bankService: BankService = BankService(), //future action
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private var currentPlayerIndex: Int = 0
 
 ) {
 
@@ -31,7 +32,9 @@ class GameController(
      */
     fun startGame() {
         // Broadcast full game state (players + board)
-        val state = GameStateDto(players, board.cells)
+        currentPlayerIndex = 0
+        val currentPlayer:Player = players[currentPlayerIndex]
+        val state = GameStateDto(players, board.cells, currentPlayer.name)
         notificationService.sendGameState(gameId, state)
     }
 
@@ -42,8 +45,12 @@ class GameController(
         val player = players.find { it.name == playerId } ?: return
         val branched = player.move(steps, board)
         if (!branched) landOnCell(playerId, player.position)
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size
+        val nextPlayer: Player = players[currentPlayerIndex]
         notificationService.sendPlayerMoved(playerId, player.position)
         notificationService.sendPlayerStatus(player)
+        val updatedState = GameStateDto(players, board.cells, nextPlayer.name)
+        notificationService.sendGameState(gameId, updatedState)
     }
 
     /**

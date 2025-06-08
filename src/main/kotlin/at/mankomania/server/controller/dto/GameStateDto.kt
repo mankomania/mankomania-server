@@ -5,5 +5,6 @@ import at.mankomania.server.model.Player
 
 data class GameStateDto(
     val players: List<Player>,
-    val board: List<BoardCell>
+    val board: List<BoardCell>,
+    val currentPlayer: String
 )
