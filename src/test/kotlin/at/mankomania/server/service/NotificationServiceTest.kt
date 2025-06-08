@@ -22,7 +22,8 @@ class NotificationServiceTest {
     fun `sendGameState should broadcast full game state to correct topic`() {
         val state = GameStateDto(
             players = listOf(),
-            board = listOf()
+            board = listOf(),
+            currentPlayer = "Dummy"
         )
 
         notificationService.sendGameState("LOBBY1", state)

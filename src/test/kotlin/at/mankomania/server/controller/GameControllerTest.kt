@@ -7,6 +7,7 @@ import at.mankomania.server.model.BoardFactory
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.NotificationService
 import at.mankomania.server.service.BankService
+import at.mankomania.server.controller.dto.PlayerDto
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -40,7 +41,11 @@ class GameControllerTest {
 
     @Test
     fun `startGame should broadcast correct initial state`() {
-        val expectedDto = GameStateDto(players, board.cells)
+        val expectedDto = GameStateDto(
+            players = players.map { PlayerDto(it.name, it.position) },
+            board = board.cells,
+            currentPlayer = "Dummy"
+        )
 
         controller.startGame()
 
