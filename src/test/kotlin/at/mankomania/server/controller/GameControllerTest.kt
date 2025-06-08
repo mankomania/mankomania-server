@@ -44,7 +44,7 @@ class GameControllerTest {
         val expectedDto = GameStateDto(
             players = players.map { PlayerDto(it.name, it.position) },
             board = board.cells,
-            currentPlayer = "Dummy"
+            currentTurnPlayerName = "Dummy"
         )
 
         controller.startGame()
