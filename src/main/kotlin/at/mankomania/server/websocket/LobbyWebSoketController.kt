@@ -48,19 +48,30 @@ class LobbyWebSocketController(
             }
 
             "start" -> {
-                logger.info("🔔 Game started in lobby ${message.lobbyId} by ${message.playerName}")
+                logger.info("🔔 Game start requested in lobby ${message.lobbyId} by ${message.playerName}")
 
-                // start the session
-                sessionManager.startSession(message.lobbyId!!, /* boardSize = */ 20)
+                /* 1) start session with given board size (fallback 20) */
+                val size = message.boardSize ?: 20
+                sessionManager.startSession(message.lobbyId!!, size)
 
-                // prepare response to client
+                /* 2) prepare response broadcast for /topic/lobby */
                 val names = lobbyService.getPlayers(message.lobbyId).map { it.name }
-                val response = LobbyResponse("start", message.lobbyId, message.playerName, names.size, names)
+                val response = LobbyResponse(
+                    type        = "start",
+                    lobbyId     = message.lobbyId,
+                    playerName  = message.playerName,
+                    playerCount = names.size,
+                    players     = names
+                )
 
-                // Delay initial GameState broadcast by 200ms so client subscription can be set up
-                Executors.newSingleThreadScheduledExecutor().schedule({
-                    sessionManager.getGameController(message.lobbyId)?.startGame()
-                }, 200, TimeUnit.MILLISECONDS)
+                /* 3) send first GameState after 200 ms so clients can subscribe */
+                Executors
+                    .newSingleThreadScheduledExecutor()
+                    .schedule({
+                        sessionManager
+                            .getGameController(message.lobbyId)
+                            ?.startGame()           // sends GameStateDto snapshot
+                    }, 200, TimeUnit.MILLISECONDS)
 
                 return response
             }

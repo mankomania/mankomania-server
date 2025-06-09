@@ -43,8 +43,13 @@ class GameLobbyController(
         @PathVariable gameId: String,
         @RequestBody dto: StartDto
     ): ResponseEntity<GameStartedDto> {
-        val startPositions = sessionManager.startSession(gameId, dto.boardSize)
+
+        val result = sessionManager.startSession(gameId, dto.boardSize)
             ?: return ResponseEntity.badRequest().build()
-        return ResponseEntity.ok(GameStartedDto(gameId, startPositions))
+
+        val (positions, firstIdx) = result          // Pair destructuring
+        return ResponseEntity.ok(
+            GameStartedDto(gameId, positions, firstIdx)
+        )
     }
 }
