@@ -36,14 +36,17 @@ class GameControllerTest {
     @BeforeEach
     fun setUp() {
         board   = BoardFactory.createBoard(5) { false }
-        players = listOf(Player("Toni"), Player("Jorge"))
+        players = listOf(
+            Player(name = "Toni", balance = 0, isTurn = false),
+            Player(name = "Jorge", balance = 0, isTurn = false)
+        )
         controller = GameController(testGameId, board, players, bankService, notificationService)
     }
 
     @Test
     fun `startGame should broadcast correct initial state`() {
         val expectedDto = GameStateDto(
-            players = players.map { PlayerDto(it.name, it.position) },
+            players = players.map { PlayerDto(it.name, it.position, it.balance, it.isTurn) },
             board = board.cells.map { CellDto(it.index, it.hasBranch) }
         )
 
