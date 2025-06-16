@@ -82,6 +82,16 @@ class GameSessionManagerTest {
         val controller = sessionManager.getGameController(gameId)
         assertNotNull(controller)
         assertTrue(controller is GameController)
+        // Verify sendPlayerStatus called with starting player
+        val startingPlayer = sessionManager.getPlayers(gameId).firstOrNull { it.isTurn }
+        if (startingPlayer != null) {
+            org.mockito.Mockito.verify(sessionManager
+                .javaClass
+                .getDeclaredField("notificationService")
+                .apply { isAccessible = true }
+                .get(sessionManager) as NotificationService
+            ).sendPlayerStatus(startingPlayer)
+        }
     }
 
     @Test
