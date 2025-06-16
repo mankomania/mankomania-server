@@ -70,7 +70,8 @@ class NotificationServiceTest {
             "name" to "TestUser",
             "position" to 6,
             "balance" to 70000,
-            "money" to mapOf(5000 to 6, 10000 to 2)
+            "money" to mapOf(5000 to 6, 10000 to 2),
+            "isTurn" to false
         )
 
         Mockito.verify(messagingTemplate).convertAndSend(
