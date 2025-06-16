@@ -26,7 +26,9 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
     private fun toPlayerDto(player: Player): at.mankomania.server.controller.dto.PlayerDto {
         return at.mankomania.server.controller.dto.PlayerDto(
             name = player.name,
-            position = player.position
+            position = player.position,
+            balance = player.balance,
+            isTurn = player.isTurn
         )
     }
 
@@ -63,7 +65,7 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
     }
     /**
      * Sends the full player status over WebSocket.
-     * Includes name, position, balance, and money (denominations).
+     * Includes name, position, balance, money (denominations), and isTurn.
      *
      * @param player the player whose full state should be sent
      */
@@ -73,7 +75,8 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
             "name" to player.name,
             "position" to player.position,
             "balance" to player.balance,
-            "money" to player.money
+            "money" to player.money,
+            "isTurn" to player.isTurn
         )
         messagingTemplate.convertAndSend(destination, payload)
     }
