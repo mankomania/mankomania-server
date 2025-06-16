@@ -68,6 +68,8 @@ class GameSessionManager(
         players.forEachIndexed { index, player ->
             player.isTurn = (index == startingPlayerIndex)
         }
+        // Notify all players of their status for consistency
+        players.forEach { notificationService.sendPlayerStatus(it) }
 
         // 3) Create board and controller
         val board = BoardFactory.createBoard(size) { idx -> idx % 10 == 0 }
