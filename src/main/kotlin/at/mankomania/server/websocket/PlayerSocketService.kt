@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class PlayerSocketService(private val messagingTemplate: SimpMessagingTemplate) {
 
-    /**
+    /**w
      * Sends the current financial state of the given player via WebSocket.
      * The message is sent to the topic: /topic/player/{playerName}/money
      *

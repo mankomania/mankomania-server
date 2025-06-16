@@ -14,7 +14,8 @@ data class Player(
     var position: Int = 0,
     var balance: Int = 0,
     val diceHistory: MutableList<DiceResult> = mutableListOf(),
-    var money: MutableMap<Int, Int>? = null
+    var money: MutableMap<Int, Int>? = null,
+    var isTurn: Boolean = false
 ) {
     /**
      * Moves the player forward on the board by a given number of steps.

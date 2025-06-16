@@ -1,6 +1,8 @@
 package at.mankomania.server.controller
 
+import at.mankomania.server.controller.dto.CellDto
 import at.mankomania.server.controller.dto.GameStateDto
+import at.mankomania.server.controller.dto.PlayerDto
 import at.mankomania.server.model.Board
 import at.mankomania.server.model.BoardCell
 import at.mankomania.server.model.BoardFactory
@@ -34,18 +36,24 @@ class GameControllerTest {
     @BeforeEach
     fun setUp() {
         board   = BoardFactory.createBoard(5) { false }
-        players = listOf(Player("Toni"), Player("Jorge"))
+        players = listOf(
+            Player(name = "Toni", balance = 0, isTurn = false),
+            Player(name = "Jorge", balance = 0, isTurn = false)
+        )
         controller = GameController(testGameId, board, players, bankService, notificationService)
     }
 
     @Test
     fun `startGame should broadcast correct initial state`() {
-        val expectedDto = GameStateDto(players, board.cells)
+        val expectedDto = GameStateDto(
+            players = players.map { PlayerDto(it.name, it.position, it.balance, it.isTurn) },
+            board = board.cells.map { CellDto(it.index, it.hasBranch) }
+        )
 
         controller.startGame()
 
         // direkte Objektreferenz, Data-Klassen haben equals() implementiert
-        verify(notificationService).sendGameState(testGameId, expectedDto)
+        verify(notificationService).sendGameStateFromModels(testGameId, players, board.cells)
     }
 
     @Test
