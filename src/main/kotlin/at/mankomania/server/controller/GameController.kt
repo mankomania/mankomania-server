@@ -32,6 +32,8 @@ class GameController(
     fun startGame() {
         // Broadcast full game state (players + board) using DTO mapping
         notificationService.sendGameStateFromModels(gameId, players, board.cells)
+        // Broadcast all players' statuses
+        players.forEach { notificationService.sendPlayerStatus(it) }
     }
 
     /**
