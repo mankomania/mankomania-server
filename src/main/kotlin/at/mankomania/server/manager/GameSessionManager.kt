@@ -63,6 +63,12 @@ class GameSessionManager(
         val startPositions = (0 until players.size).map { i -> (i * size) / players.size }
         players.forEachIndexed { idx, player -> player.position = startPositions[idx] }
 
+        // Select starting player randomly and mark as active/turn
+        val startingPlayerIndex = (players.indices).random()
+        players.forEachIndexed { index, player ->
+            player.isTurn = (index == startingPlayerIndex)
+        }
+
         // 3) Create board and controller
         val board = BoardFactory.createBoard(size) { idx -> idx % 10 == 0 }
         val controller = GameController(gameId, board, players, bankService, notificationService)
