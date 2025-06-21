@@ -2,6 +2,7 @@ package at.mankomania.server.controller
 
 import at.mankomania.server.controller.dto.DiceMoveResultDto
 import at.mankomania.server.manager.GameSessionManager
+import at.mankomania.server.service.PlayerMoveService
 import at.mankomania.server.util.DefaultDiceStrategy
 import at.mankomania.server.util.Dice
 import org.slf4j.LoggerFactory
@@ -26,7 +27,8 @@ import org.springframework.stereotype.Controller
 @Controller
 class PlayerController(
     private val messagingTemplate: SimpMessagingTemplate,
-    private val sessionManager: GameSessionManager
+    private val sessionManager: GameSessionManager,
+    private val playerMoveService: PlayerMoveService
 ) {
     // Dice roller using the default (random) strategy
     private val dice = Dice(DefaultDiceStrategy())
@@ -34,7 +36,6 @@ class PlayerController(
     companion object {
         private val log = LoggerFactory.getLogger(PlayerController::class.java)
     }
-
     /**
      * Handles incoming WebSocket dice roll messages from the frontend.
      *
@@ -42,21 +43,13 @@ class PlayerController(
      */
     @MessageMapping("/rollDice/{gameId}")
     fun handleDiceRoll(@DestinationVariable gameId: String, @Payload playerId: String) {
-
-        val controller = sessionManager.getGameController(gameId)
-        if (controller == null) {
-            log.warn("Game not found for gameId: {}", gameId)
-            return
-        }
-
         // Roll the dice
         val diceResult = dice.roll()
 
-        // Store the dice result in the player's history for game state tracking
-        controller.getPlayer(playerId)?.recordDiceRoll(diceResult)
 
-        // Apply movement logic and get resulting field data
-        val moveResult = controller.computeMoveResult(playerId, diceResult.sum)
+        //calls playerMoveService
+        val moveResult = playerMoveService.computeMove(gameId, playerId, diceResult.sum)
+
         if (moveResult == null) {
             log.warn("Move failed for player: {}", playerId)
             return
