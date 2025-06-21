@@ -59,9 +59,13 @@ class GameSessionManager(
         // 1) Assign starting money
         moneyAssigner.assignToAll(players)
 
-        // 2) Calculate fair, evenly spaced start positions
-        val startPositions = (0 until players.size).map { i -> (i * size) / players.size }
-        players.forEachIndexed { idx, player -> player.position = startPositions[idx] }
+        // 2) Exact Startpositions
+        val startPositions = listOf(0, 12, 32, 20)
+        players.forEachIndexed { idx, player ->
+            if (idx < startPositions.size) {
+                player.position = startPositions[idx]
+            }
+        }
 
         // Select starting player randomly and mark as active/turn
         val startingPlayerIndex = (players.indices).random()
@@ -72,7 +76,7 @@ class GameSessionManager(
         players.forEach { notificationService.sendPlayerStatus(it) }
 
         // 3) Create board and controller
-        val board = BoardFactory.createBoard(size) { idx -> idx % 10 == 0 }
+        val board = BoardFactory.createSimpleBoard()
         val controller = GameController(gameId, board, players, bankService, notificationService)
         activeGames[gameId] = controller
 
