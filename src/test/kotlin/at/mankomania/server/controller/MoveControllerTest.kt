@@ -3,6 +3,7 @@ package at.mankomania.server.controller
 import at.mankomania.server.controller.dto.MoveRequest
 import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.model.MoveResult
+import at.mankomania.server.service.PlayerMoveService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -26,7 +27,8 @@ class MoveControllerTest {
     @BeforeEach
     fun setup() {
         sessionManager = Mockito.mock(GameSessionManager::class.java)
-        controller = MoveController(sessionManager)
+        val moveService = PlayerMoveService(sessionManager)
+        controller = MoveController(sessionManager, moveService)
     }
 
     /**

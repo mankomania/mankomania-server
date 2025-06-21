@@ -9,12 +9,16 @@ import at.mankomania.server.websocket.PlayerSocketService
 import kotlin.test.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class GameSessionManagerTest {
 
+    private lateinit var notificationService: NotificationService
     private lateinit var sessionManager: GameSessionManager
     private val gameId = "testGame"
+
     @BeforeEach
     fun setUp() {
         val playerSocketService = mock(PlayerSocketService::class.java)
@@ -79,9 +83,23 @@ class GameSessionManagerTest {
         // join 3 players directly in this test
         listOf("P1", "P2", "P3").forEach { sessionManager.joinGame(gameId, it) }
         sessionManager.startSession(gameId, 40)
+
+        // verify controller creation
         val controller = sessionManager.getGameController(gameId)
         assertNotNull(controller)
         assertTrue(controller is GameController)
+
+        // retrieve starting player and verify notification was sent
+        val startingPlayer = sessionManager.getPlayers(gameId).firstOrNull { it.isTurn }
+        if (startingPlayer != null) {
+            val field = sessionManager
+                .javaClass
+                .getDeclaredField("notificationService")
+                .apply { isAccessible = true }
+
+            val realNotificationService = field.get(sessionManager) as NotificationService
+            verify(realNotificationService, atLeastOnce()).sendPlayerStatus(startingPlayer)
+        }
     }
 
     @Test

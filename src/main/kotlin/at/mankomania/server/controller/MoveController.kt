@@ -3,6 +3,7 @@ package at.mankomania.server.controller
 import at.mankomania.server.controller.dto.MoveRequest
 import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.model.MoveResult
+import at.mankomania.server.service.PlayerMoveService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/move")
 class MoveController(
-private val sessionManager: GameSessionManager
+private val sessionManager: GameSessionManager,
+private val playerMoveService: PlayerMoveService
 ) {
     /**
      * Handles a player move request for a specific game instance.
@@ -34,8 +36,7 @@ private val sessionManager: GameSessionManager
         @PathVariable gameId: String,
         @RequestBody request: MoveRequest
     ): ResponseEntity<MoveResult> {
-        val controller = sessionManager.getGameController(gameId) ?: return ResponseEntity.badRequest().build()
-        val result = controller.computeMoveResult(request.playerId, request.steps)
+        val result = playerMoveService.computeMove(gameId, request.playerId, request.steps)
             ?: return ResponseEntity.badRequest().build()
         return ResponseEntity.ok(result)
     }

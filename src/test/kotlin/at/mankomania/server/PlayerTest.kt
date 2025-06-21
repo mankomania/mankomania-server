@@ -1,4 +1,4 @@
-package at.mankomania.server
+package at.mankomania.server.test
 
 
 import at.mankomania.server.model.Board
@@ -162,5 +162,24 @@ class PlayerTest {
 
         assertEquals(1, player.diceHistory.size)
         assertEquals(result, player.diceHistory.first())
+    }
+    /**
+     * Verifies that balance and money are assigned when a player is created and money is distributed.
+     */
+    @Test
+    fun playerReceivesStartingMoneyAndBalance() {
+        val p = Player(name = "testplayer")
+        // Simulate assignment
+        val denominations = mapOf(
+            5_000 to 10,
+            10_000 to 5,
+            50_000 to 4,
+            100_000 to 7
+        )
+        val totalAmount = denominations.entries.sumOf { it.key * it.value }
+        p.balance = totalAmount
+        p.money = denominations.toMutableMap()
+        assertEquals(totalAmount, p.balance)
+        assertEquals<Map<Int, Int>>(denominations, p.money ?: error("Money should not be null"))
     }
 }

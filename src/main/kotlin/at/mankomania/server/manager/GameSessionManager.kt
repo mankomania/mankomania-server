@@ -67,6 +67,14 @@ class GameSessionManager(
             }
         }
 
+        // Select starting player randomly and mark as active/turn
+        val startingPlayerIndex = (players.indices).random()
+        players.forEachIndexed { index, player ->
+            player.isTurn = (index == startingPlayerIndex)
+        }
+        // Notify all players of their status for consistency
+        players.forEach { notificationService.sendPlayerStatus(it) }
+
         // 3) Create board and controller
         val board = BoardFactory.createSimpleBoard()
         val controller = GameController(gameId, board, players, bankService, notificationService)
