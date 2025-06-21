@@ -12,6 +12,7 @@ import at.mankomania.server.controller.dto.DiceMoveResultDto
 import at.mankomania.server.controller.GameController
 import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.model.MoveResult
+import at.mankomania.server.service.PlayerMoveService
 import at.mankomania.server.util.Dice
 import at.mankomania.server.util.DiceResult
 import org.junit.jupiter.api.BeforeEach
@@ -34,7 +35,8 @@ class PlayerControllerTest {
     fun setUp() {
         messagingTemplate = mock(SimpMessagingTemplate::class.java)
         sessionManager = mock(GameSessionManager::class.java)
-        controller = PlayerController(messagingTemplate, sessionManager)
+        val moveService = PlayerMoveService(sessionManager)
+        controller = PlayerController(messagingTemplate, sessionManager, moveService)
     }
 
     /**
