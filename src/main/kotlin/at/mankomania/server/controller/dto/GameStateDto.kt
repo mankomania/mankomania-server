@@ -6,5 +6,6 @@ import at.mankomania.server.model.Player
 data class GameStateDto(
     val players: List<PlayerDto>,
     val board: List<BoardCell>,
-    val currentTurnPlayerName: String = ""
+    val currentTurnPlayerName: String = "",
+    val currentPlayerIndex: Int,
 )

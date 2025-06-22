@@ -38,7 +38,7 @@ class GameController(
         val state = GameStateDto(
             players = players.map { PlayerDto(it.name, it.position) },
             board = board.cells,
-            currentTurnPlayerName = currentPlayer.name
+            currentPlayerIndex = currentPlayerIndex
         )
         notificationService.sendGameState(gameId, state)
     }
@@ -57,7 +57,7 @@ class GameController(
         val updatedState = GameStateDto(
             players = players.map { PlayerDto(it.name, it.position) },
             board = board.cells,
-            currentTurnPlayerName = nextPlayer.name
+            currentPlayerIndex = currentPlayerIndex
         )
         notificationService.sendGameState(gameId, updatedState)
     }
