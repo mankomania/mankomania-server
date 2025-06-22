@@ -10,6 +10,8 @@ import at.mankomania.server.controller.dto.GameStateDto
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import at.mankomania.server.model.Player
+import at.mankomania.server.controller.dto.GameStartedDto
+
 
 /**
  * Sends game updates to clients via WebSocket (STOMP).
@@ -51,4 +53,9 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
         )
         messagingTemplate.convertAndSend(destination, payload)
     }
+    fun sendGameStarted(gameId: String, dto: GameStartedDto) {
+        val destination = "/topic/lobby/$gameId/gameStarted"
+        messagingTemplate.convertAndSend(destination, dto)
+    }
+
 }

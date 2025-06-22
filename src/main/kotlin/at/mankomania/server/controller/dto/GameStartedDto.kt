@@ -12,5 +12,8 @@ package at.mankomania.server.controller.dto
 
 data class GameStartedDto(
     val gameId: String,
-    val startPositions: List<Int>
+    val startPositions: List<Int>,
+    val players: List<PlayerDto>,
+    val currentPlayerIndex: Int,
+    val currentPlayerName: String,
 )
