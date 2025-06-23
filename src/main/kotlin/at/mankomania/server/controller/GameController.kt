@@ -40,6 +40,7 @@ class GameController(
             board = board.cells,
             currentTurnPlayerName = currentPlayer.name
         )
+        println("DEBUG: currentPlayer.name = '${currentPlayer.name}'")
         notificationService.sendGameState(gameId, state)
     }
 
