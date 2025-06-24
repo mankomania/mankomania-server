@@ -74,6 +74,7 @@ class GameSessionManager(
 
         // 4) Start the game
         controller.startGame()
+        println("Starting game for lobby $gameId – first player is: ${players.firstOrNull()?.name}")
 
         return startPositions
     }

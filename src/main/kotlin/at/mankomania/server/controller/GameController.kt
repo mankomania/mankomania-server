@@ -14,6 +14,7 @@ import at.mankomania.server.model.MoveResult
 import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
+import at.mankomania.server.controller.dto.PlayerDto
 
 
 class GameController(
@@ -21,7 +22,8 @@ class GameController(
     private val board: Board,
     private val players: List<Player>,
     private val bankService: BankService = BankService(), //future action
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private var currentPlayerIndex: Int = 0
 
 ) {
 
@@ -31,7 +33,14 @@ class GameController(
      */
     fun startGame() {
         // Broadcast full game state (players + board)
-        val state = GameStateDto(players, board.cells)
+        currentPlayerIndex = 0
+        val currentPlayer:Player = players[currentPlayerIndex]
+        val state = GameStateDto(
+            players = players.map { PlayerDto(it.name, it.position) },
+            board = board.cells,
+            currentTurnPlayerName = currentPlayer.name
+        )
+        println("DEBUG: currentPlayer.name = '${currentPlayer.name}'")
         notificationService.sendGameState(gameId, state)
     }
 
@@ -42,8 +51,16 @@ class GameController(
         val player = players.find { it.name == playerId } ?: return
         val branched = player.move(steps, board)
         if (!branched) landOnCell(playerId, player.position)
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size
+        val nextPlayer: Player = players[currentPlayerIndex]
         notificationService.sendPlayerMoved(playerId, player.position)
         notificationService.sendPlayerStatus(player)
+        val updatedState = GameStateDto(
+            players = players.map { PlayerDto(it.name, it.position) },
+            board = board.cells,
+            currentTurnPlayerName = nextPlayer.name
+        )
+        notificationService.sendGameState(gameId, updatedState)
     }
 
     /**
