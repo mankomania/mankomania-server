@@ -9,13 +9,14 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.socket.messaging.SessionConnectEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
+import java.util.concurrent.atomic.AtomicInteger
 
 @ExtendWith(MockitoExtension::class)
 class PresenceListenerTest {
 
     // Mockito mock, relaxed by default
     private val template: SimpMessagingTemplate = mock(SimpMessagingTemplate::class.java)
-    private val counter = ClientCounter()
+    private val counter = AtomicInteger()
 
     private lateinit var listener: PresenceListener
 
