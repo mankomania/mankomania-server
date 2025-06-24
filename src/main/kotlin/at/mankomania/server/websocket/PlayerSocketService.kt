@@ -16,6 +16,19 @@ class PlayerSocketService(private val messagingTemplate: SimpMessagingTemplate) 
      *
      * @param player the player whose financial state should be sent
      */
+
+    private val sessionToGameMap = mutableMapOf<String, String>()
+
+    fun registerSession(sessionId: String?, gameId: String) {
+        if (sessionId != null) {
+            sessionToGameMap[sessionId] = gameId
+            println("🔗 Session $sessionId registered to game $gameId")
+        }
+    }
+    fun getGameIdForSession(sessionId: String?): String? {
+        return sessionId?.let { sessionToGameMap[it] }
+    }
+
     fun sendFinancialState(player: Player) {
         val destination = "/topic/player/${player.name}/money"
         val moneySnapshot = player.money?.toMap()
