@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service
 import at.mankomania.server.model.Player
 import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.model.toDto
-
+import org.springframework.context.annotation.Lazy
 /**
  * Sends game updates to clients via WebSocket (STOMP).
  */
 @Service
-class NotificationService( private val sessionManager: GameSessionManager, private val messagingTemplate: SimpMessagingTemplate) {
+class NotificationService( @Lazy private val sessionManager: GameSessionManager, private val messagingTemplate: SimpMessagingTemplate) {
 
     /* Full snapshot – players + board */
     fun sendGameState(lobbyId: String, state: GameStateDto) {
