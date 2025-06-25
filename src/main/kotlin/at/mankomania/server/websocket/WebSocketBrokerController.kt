@@ -7,7 +7,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.stereotype.Controller
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.beans.factory.annotation.Autowired
-
+import at.mankomania.server.manager.GameSessionManager
+import at.mankomania.server.model.MoveResult
+import at.mankomania.server.controller.dto.RegisterDto
 
 
 // import org.springframework.web.bind.annotation.*
@@ -31,6 +33,12 @@ import org.springframework.beans.factory.annotation.Autowired
 class WebSocketBrokerController {
     private val logger = LoggerFactory.getLogger(WebSocketBrokerController::class.java)
 
+    @Autowired
+    lateinit var sessionManager: GameSessionManager
+
+    @Autowired
+    lateinit var playerSocketService: PlayerSocketService
+
     /**
      * Empfängt STOMP Nachrichten, die der Client an "/app/greetings" schickt,
      * und sendet sie an alle abonnierten "/topic/greetings"
@@ -45,17 +53,29 @@ class WebSocketBrokerController {
     lateinit var messagingTemplate: SimpMessagingTemplate
 
     @MessageMapping("/register")
-    fun registerName(message: String, accessor: StompHeaderAccessor) {
-        val sessionId = accessor.sessionId
-        println("REGISTER from session: $sessionId with name: $message")
+    fun registerName(dto: RegisterDto, accessor: StompHeaderAccessor) {
+        val sessionId = accessor.sessionId ?: return
+        println("REGISTER from session: $sessionId with name: ${dto.name}, gameId: ${dto.gameId}")
+
+        playerSocketService.registerSession(sessionId, dto.gameId)
 
         messagingTemplate.convertAndSend(
             "/topic/register",
-            "✅ Registered: $message"
+            "✅ Registered: ${dto.name} in Game ${dto.gameId}"
         )
     }
+
     fun createHeadersForSession(sessionId: String): Map<String, Any> {
         return mapOf("simpSessionId" to sessionId)
     }
+
+    @MessageMapping("/player-moved")
+    fun handlePlayerMoved(moveResult: MoveResult, accessor: StompHeaderAccessor) {
+        val sessionId = accessor.sessionId ?: return
+        val gameId = playerSocketService.getGameIdForSession(sessionId) ?: return
+
+        messagingTemplate.convertAndSend("/topic/$gameId/player-moved", moveResult)
+    }
+
 }
 
