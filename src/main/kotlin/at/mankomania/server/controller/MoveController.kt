@@ -5,7 +5,8 @@ import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.model.MoveResult
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
+import at.mankomania.server.controller.dto.DiceMoveResultDto
+import at.mankomania.server.service.NotificationService
 
 /**
  * @file MoveController.kt
@@ -39,4 +40,16 @@ private val sessionManager: GameSessionManager
             ?: return ResponseEntity.badRequest().build()
         return ResponseEntity.ok(result)
     }
+    @RestController
+    @RequestMapping("/game")
+    class GameMoveController(
+        private val notificationService: NotificationService
+    ) {
+        @PostMapping("/move")
+        fun handleDiceMove(@RequestBody result: DiceMoveResultDto) {
+            notificationService.sendToGameTopic(result.playerId, "/topic/game/move", result)
+        }
+    }
+
+
 }

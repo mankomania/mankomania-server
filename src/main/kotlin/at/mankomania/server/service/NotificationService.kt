@@ -65,6 +65,9 @@ class NotificationService( @Lazy private val sessionManager: GameSessionManager,
 
         messagingTemplate.convertAndSend("/topic/lobby/$gameId", gameState)
     }
+    fun sendToGameTopic(playerId: String, topic: String, payload: Any) {
+        messagingTemplate.convertAndSend(topic, payload)
+    }
 
 }
 
