@@ -15,6 +15,7 @@ import at.mankomania.server.model.Player
 import at.mankomania.server.service.BankService
 import at.mankomania.server.service.NotificationService
 import at.mankomania.server.controller.dto.PlayerDto
+import at.mankomania.server.model.toDto
 
 
 class GameController(
@@ -36,8 +37,8 @@ class GameController(
         currentPlayerIndex = 0
         val currentPlayer:Player = players[currentPlayerIndex]
         val state = GameStateDto(
-            players = players.map { PlayerDto(it.name, it.position) },
-            board = board.cells,
+            players = players.map { it.toDto() },
+            board = board.cells.map {it.toDto() },
             currentTurnPlayerName = currentPlayer.name
         )
         println("DEBUG: currentPlayer.name = '${currentPlayer.name}'")
@@ -57,7 +58,7 @@ class GameController(
         notificationService.sendPlayerStatus(player)
         val updatedState = GameStateDto(
             players = players.map { PlayerDto(it.name, it.position) },
-            board = board.cells,
+            board = board.cells.map {it.toDto() },
             currentTurnPlayerName = nextPlayer.name
         )
         notificationService.sendGameState(gameId, updatedState)
