@@ -42,7 +42,7 @@ class MoveControllerTest {
 
         // Simulate GameSessionManager returning the mock controller and the controller returning the MoveResult
         Mockito.`when`(sessionManager.getGameController("game123")).thenReturn(mockGameController)
-        Mockito.`when`(mockGameController.computeMoveResult("Player1", 2)).thenReturn(moveResult)
+        Mockito.`when`(mockGameController.computeMoveResult("Player1", "2", 2)).thenReturn(moveResult)
 
         // Act: Send a valid move request
         val request = MoveRequest("Player1", 2)
@@ -83,7 +83,7 @@ class MoveControllerTest {
         val mockGameController = Mockito.mock(GameController::class.java)
 
         Mockito.`when`(sessionManager.getGameController("game123")).thenReturn(mockGameController)
-        Mockito.`when`(mockGameController.computeMoveResult("Ghost", 4)).thenReturn(null)
+        Mockito.`when`(mockGameController.computeMoveResult("Ghost", "4",2)).thenReturn(null)
 
         // Act: Send a move request with a non-existent player
         val request = MoveRequest("Ghost", 4)

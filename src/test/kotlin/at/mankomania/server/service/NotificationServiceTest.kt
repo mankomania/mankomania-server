@@ -6,16 +6,20 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.messaging.simp.SimpMessagingTemplate
+import at.mankomania.server.manager.GameSessionManager
+
 
 class NotificationServiceTest {
 
+    lateinit var sessionManager: GameSessionManager
     private lateinit var messagingTemplate: SimpMessagingTemplate
     private lateinit var notificationService: NotificationService
 
     @BeforeEach
     fun setup() {
+        sessionManager = Mockito.mock(GameSessionManager::class.java)
         messagingTemplate = Mockito.mock(SimpMessagingTemplate::class.java)
-        notificationService = NotificationService(messagingTemplate)
+        notificationService = NotificationService(sessionManager,messagingTemplate)
     }
 
     @Test
