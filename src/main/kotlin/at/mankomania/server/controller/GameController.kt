@@ -19,8 +19,8 @@ import at.mankomania.server.controller.dto.PlayerDto
 
 class GameController(
     private val gameId: String,
-    private val board: Board,
-    private val players: List<Player>,
+    val board: Board,
+    val players: List<Player>,
     private val bankService: BankService = BankService(), //future action
     private val notificationService: NotificationService,
     private var currentPlayerIndex: Int = 0

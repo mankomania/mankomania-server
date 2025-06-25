@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service
 import at.mankomania.server.model.Player
 import at.mankomania.server.manager.GameSessionManager
 import at.mankomania.server.model.toDto
-import at.mankomania.server.model.Player.toDto
-import at.mankomania.server.model.BoardCell.toDto
-
 
 /**
  * Sends game updates to clients via WebSocket (STOMP).
