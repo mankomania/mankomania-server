@@ -7,6 +7,8 @@
 package at.mankomania.server.model
 
 import at.mankomania.server.controller.GameController
+import at.mankomania.server.controller.dto.CellDto
+
 
 /**
  * @property index The position of this field on the board (0-based).
@@ -31,6 +33,13 @@ data class BoardCell(
     fun landOn(player: Player, gameController: GameController) {
         action?.execute(player, gameController)
         state = CellState.OCCUPIED
+    }
+
+    fun BoardCell.toDto(): CellDto {
+        return CellDto(
+            index = this.index,
+            hasBranch = this.hasBranch,
+        )
     }
 
 

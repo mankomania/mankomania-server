@@ -71,7 +71,7 @@ class GameController(
      * @param steps Number of steps the player will move.
      * @return A MoveResult DTO with position and field data, or null if player not found.
      **/
-    fun computeMoveResult(playerId: String, steps: Int): MoveResult? {
+    fun computeMoveResult(gameId: String, playerId: String, steps: Int): MoveResult? {
         val player = players.find{ it.name == playerId} ?: return null
         val oldPos = player.position
         val branched = player.move(steps, board)
@@ -79,6 +79,8 @@ class GameController(
 
         val currentField = board.getCell(player.position)
         val others = players.filter { it.name != playerId && it.position == player.position }.map {it.name}
+
+        notificationService.broadcastGameState(gameId)
 
         return MoveResult(
             newPosition = player.position,
@@ -106,5 +108,4 @@ class GameController(
         notificationService.sendPlayerLanded(playerId, cellIndex)
         notificationService.sendPlayerStatus(player)
     }
-
 }

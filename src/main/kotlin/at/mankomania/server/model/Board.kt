@@ -18,6 +18,7 @@ package at.mankomania.server.model
 
 class Board (val cells: List<BoardCell>) {
 
+    fun getCells(): List<BoardCell> = cells
     val size: Int = cells.size
 
     constructor(size: Int, isBranchField: (Int) -> Boolean) : this(

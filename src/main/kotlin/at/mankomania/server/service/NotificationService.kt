@@ -10,12 +10,17 @@ import at.mankomania.server.controller.dto.GameStateDto
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import at.mankomania.server.model.Player
+import at.mankomania.server.manager.GameSessionManager
+import at.mankomania.server.model.toDto
+import at.mankomania.server.model.Player.toDto
+import at.mankomania.server.model.BoardCell.toDto
+
 
 /**
  * Sends game updates to clients via WebSocket (STOMP).
  */
 @Service
-class NotificationService(private val messagingTemplate: SimpMessagingTemplate) {
+class NotificationService( private val sessionManager: GameSessionManager, private val messagingTemplate: SimpMessagingTemplate) {
 
     /* Full snapshot – players + board */
     fun sendGameState(lobbyId: String, state: GameStateDto) {
@@ -51,4 +56,18 @@ class NotificationService(private val messagingTemplate: SimpMessagingTemplate) 
         )
         messagingTemplate.convertAndSend(destination, payload)
     }
+    fun broadcastGameState(gameId: String) {
+        val controller = sessionManager.getGameController(gameId) ?: return
+        val board = controller.board.cells.map { it.toDto() }
+        val players = controller.players.map { it.toDto() }
+
+        val gameState = GameStateDto(
+            board = board,
+            players = players
+        )
+
+        messagingTemplate.convertAndSend("/topic/lobby/$gameId", gameState)
+    }
+
 }
+

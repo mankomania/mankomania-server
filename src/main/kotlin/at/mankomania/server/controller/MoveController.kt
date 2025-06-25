@@ -35,7 +35,7 @@ private val sessionManager: GameSessionManager
         @RequestBody request: MoveRequest
     ): ResponseEntity<MoveResult> {
         val controller = sessionManager.getGameController(gameId) ?: return ResponseEntity.badRequest().build()
-        val result = controller.computeMoveResult(request.playerId, request.steps)
+        val result = controller.computeMoveResult(gameId, request.playerId, request.steps)
             ?: return ResponseEntity.badRequest().build()
         return ResponseEntity.ok(result)
     }

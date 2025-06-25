@@ -1,6 +1,7 @@
 package at.mankomania.server.model
 
 import at.mankomania.server.util.DiceResult
+import at.mankomania.server.controller.dto.PlayerDto
 
 /**
  * @author eles17
@@ -83,5 +84,12 @@ data class Player(
      */
     fun recordDiceRoll(result: DiceResult) {
         diceHistory.add(result)
+    }
+
+    fun Player.toDto(): PlayerDto {
+        return PlayerDto(
+            name = this.name,
+            position = this.position,
+        )
     }
 }
