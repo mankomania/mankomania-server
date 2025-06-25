@@ -56,7 +56,7 @@ class PlayerController(
         controller.getPlayer(playerId)?.recordDiceRoll(diceResult)
 
         // Apply movement logic and get resulting field data
-        val moveResult = controller.computeMoveResult(playerId, diceResult.sum)
+        val moveResult = controller.computeMoveResult(gameId,playerId, diceResult.sum)
         if (moveResult == null) {
             log.warn("Move failed for player: {}", playerId)
             return
